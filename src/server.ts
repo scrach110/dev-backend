@@ -154,27 +154,37 @@ app.get('/entidad/:id', (req, res) => {
     const persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
-        res.status(404).json();
+        return res.status(404).json();
     }
 
     res.json(persona);
 });
 
 // TO DO
+
 app.post('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
 
     const persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
-        res.status(404).json({ error: 'ID inválido' });
+        return res.status(404).json({ error: 'ID inválido' });
     }
 
-    const loQueLlega = req.body;
+    try {
+        const personaEdit: Persona = req.body;
 
-    console.log(loQueLlega);
-
-    res.json('entró');
+        persona.nombre = personaEdit.nombre;
+        persona.apellido = personaEdit.apellido;
+        persona.dni = personaEdit.dni;
+        persona.fechaDeNacimiento = new Date(personaEdit.fechaDeNacimiento);
+        persona.genero = personaEdit.genero;
+        persona.autos = personaEdit.autos;
+        return res.status(201).json({'Persona actualizada correctamente' : persona });
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({'Datos incorrectos'});
+    }
 });
 
 // Levantamos el servidor en el puerto que configuramos
