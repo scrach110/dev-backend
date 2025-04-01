@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 
 //Variables temporales de las interfaces
 const BMW: Auto = {
+    id: 1,
     año: 2013,
     color: 'Negro',
     marca: 'BMW',
@@ -32,6 +33,7 @@ const BMW: Auto = {
 };
 
 const PORCHE: Auto = {
+    id: 2,
     año: 2010,
     color: 'Blanco',
     marca: 'Porche',
@@ -43,6 +45,7 @@ const PORCHE: Auto = {
 };
 
 const FIESTA: Auto = {
+    id: 3,
     año: 2004,
     color: 'Gris',
     marca: 'Ford',
@@ -52,34 +55,7 @@ const FIESTA: Auto = {
     numeroDeChasis: 'JDFASFDJOLA121|',
     idPersona: 2
 };
-/*
-const ricardo: Persona = {
-    nombre: 'Ricardo',
-    apellido: 'Faustino',
-    dni: '12342134',
-    fechaDeNacimiento: new Date(1990, 2, 27),
-    genero: 'MASCULINO',
-    autos: [BMW]
-};
 
-const fausto: Persona = {
-    nombre: 'Fausto',
-    apellido: 'Lugano',
-    dni: '523523521',
-    fechaDeNacimiento: new Date(2003, 5, 13),
-    genero: 'NO-BINARIO',
-    autos: [BMW, FIESTA]
-};
-
-const cleopatra: Persona = {
-    nombre: 'Cleopatra',
-    apellido: 'Fiorito',
-    dni: '-3123412412',
-    fechaDeNacimiento: new Date(1, 2, 12),
-    genero: 'FEMENINO',
-    autos: [PORCHE]
-};
-*/
 let listaPersonas: Persona[] = [
     {
         id: 1,
@@ -126,17 +102,16 @@ app.post('/login', (req, res) => {
 app.get('/personas', (req, res) => {
     console.log(req.body);
 
-    const personas = listaPersonas.map((p) => `nombre:${p.nombre}  apellido:${p.apellido} - DNI: ${p.dni}`);
+    const personas = listaPersonas.map((p) => ({ nombre: p.nombre,apellido: p.apellido, DNI: p.dni }));
 
-    res.json(`las personas en la app son: ${personas}`);
+    res.json(personas);
 });
 
 app.get('/autos', (req, res) => {
     const autos = listaPersonas.map(
-        (p) => `${p.autos.map((a) => `Marca: ${a.marca}, Modelo: ${a.modelo}, Año: ${a.año}, Patente: ${a.patente}`)}`
-    );
+        (p) => p.autos.map((a) => ({marca: a.marca, modelo: a.modelo, año: a.año, patente: a.patente})));
 
-    res.json(`los autos en la app son: ${autos}`);
+    res.json(autos);
 });
 
 app.get('/autos/id', (req, res) => {
@@ -144,10 +119,10 @@ app.get('/autos/id', (req, res) => {
 
     const persona = listaPersonas.find((p) => p.id === idPersona);
     const autos = persona?.autos.map(
-        (a) => `Marca: ${a.marca}, Modelo: ${a.modelo}, Año: ${a.año}, Patente: ${a.patente}`
+        (a) => ({ marca: a.marca, modelo: a.modelo, año: a.año, patente: a.patente})
     );
 
-    res.json(`los autos del usuario ${persona?.nombre} son: ${autos}`);
+    res.json(autos);
 });
 
 app.get('/entidad/:id', (req, res) => {
@@ -168,7 +143,7 @@ app.get('/entidad/:id', (req, res) => {
 app.post('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
 
-    const persona = listaPersonas.find((p) => p.id === idPersona);
+    let persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
         res.status(404).json({ error: 'ID inválido' });
@@ -176,8 +151,16 @@ app.post('/persona/:id', (req, res) => {
     }
 
     try {
+
+
         const personaEdit: Persona = req.body;
 
+        //personaEdit = {...persona};
+
+        persona = {...personaEdit};
+
+
+        /*
         persona.nombre = personaEdit.nombre ?? persona.nombre;
         persona.apellido = personaEdit.apellido ?? persona.apellido;
         persona.dni = personaEdit.dni ?? persona.dni;
@@ -186,8 +169,8 @@ app.post('/persona/:id', (req, res) => {
             : persona.fechaDeNacimiento;
         persona.genero = personaEdit.genero ?? persona.genero;
         persona.autos = personaEdit.autos ?? persona.autos;
-
-        res.status(201).json({ 'ersona actualizada': persona });
+        */
+        res.status(201).json({ 'persona actualizada': persona });
         return;
     } catch (error) {
         console.log(error);
@@ -196,7 +179,33 @@ app.post('/persona/:id', (req, res) => {
     }
 });
 
-app.post('/persona/', (req, res) => {});
+app.post('/persona', (req, res) => {
+
+    try {
+
+    const personaCrear : Persona = {
+            id: req.body.id,
+            nombre: req.body.nombre,
+            apellido: req.body.apellido,
+            dni: req.body.dni,
+            fechaDeNacimiento: req.body.fechaDeNacimiento,
+            genero: req.body.genero,
+            autos: req.body.autos
+        }
+
+    listaPersonas.push(personaCrear);
+    res.status(200).json(personaCrear.nombre);
+
+    return;
+        }
+    catch (error) {
+        console.log(error);
+
+        res.status(400).json("los datos son incorrectos");
+        return;
+        }
+    }
+);
 
 app.delete('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
