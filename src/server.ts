@@ -7,7 +7,6 @@ import process from 'process';
 
 import Persona from './model/Persona';
 import Auto from './model/Auto';
-import { error } from 'console';
 
 // Creamos nuestra app express
 const app = express();
@@ -28,7 +27,8 @@ const BMW: Auto = {
     modelo: 'KANGOO',
     motor: 'V6',
     patente: 'FTW-231',
-    numeroDeChasis: '235325dsad'
+    numeroDeChasis: '235325dsad',
+    idPersona: 3
 };
 
 const PORCHE: Auto = {
@@ -38,7 +38,8 @@ const PORCHE: Auto = {
     modelo: 'lals',
     motor: 'V8',
     patente: 'JKW-231',
-    numeroDeChasis: '9213987FG'
+    numeroDeChasis: '9213987FG',
+    idPersona: 1
 };
 
 const FIESTA: Auto = {
@@ -48,7 +49,8 @@ const FIESTA: Auto = {
     modelo: 'Fiesta',
     motor: 'V2',
     patente: 'PQW-532',
-    numeroDeChasis: 'JDFASFDJOLA121|'
+    numeroDeChasis: 'JDFASFDJOLA121|',
+    idPersona: 2
 };
 /*
 const ricardo: Persona = {
@@ -78,7 +80,7 @@ const cleopatra: Persona = {
     autos: [PORCHE]
 };
 */
-const listaPersonas: Persona[] = [
+let listaPersonas: Persona[] = [
     {
         id: 1,
         nombre: 'Cleopatra',
@@ -95,7 +97,7 @@ const listaPersonas: Persona[] = [
         dni: '523523521',
         fechaDeNacimiento: new Date(2003, 5, 13),
         genero: 'NO-BINARIO',
-        autos: [BMW, FIESTA]
+        autos: [FIESTA]
     },
     {
         id: 3,
@@ -154,7 +156,8 @@ app.get('/entidad/:id', (req, res) => {
     const persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
-        return res.status(404).json();
+        res.status(404).json();
+        return;
     }
 
     res.json(persona);
@@ -168,23 +171,44 @@ app.post('/persona/:id', (req, res) => {
     const persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
-        return res.status(404).json({ error: 'ID inválido' });
+        res.status(404).json({ error: 'ID inválido' });
+        return;
     }
 
     try {
         const personaEdit: Persona = req.body;
 
-        persona.nombre = personaEdit.nombre;
-        persona.apellido = personaEdit.apellido;
-        persona.dni = personaEdit.dni;
-        persona.fechaDeNacimiento = new Date(personaEdit.fechaDeNacimiento);
-        persona.genero = personaEdit.genero;
-        persona.autos = personaEdit.autos;
-        return res.status(201).json({'Persona actualizada correctamente' : persona });
+        persona.nombre = personaEdit.nombre ?? persona.nombre;
+        persona.apellido = personaEdit.apellido ?? persona.apellido;
+        persona.dni = personaEdit.dni ?? persona.dni;
+        persona.fechaDeNacimiento = personaEdit.fechaDeNacimiento
+            ? new Date(personaEdit.fechaDeNacimiento)
+            : persona.fechaDeNacimiento;
+        persona.genero = personaEdit.genero ?? persona.genero;
+        persona.autos = personaEdit.autos ?? persona.autos;
+
+        res.status(201).json({ 'ersona actualizada': persona });
+        return;
     } catch (error) {
         console.log(error);
-        return res.status(401).json({'Datos incorrectos'});
+        res.status(401).json({ error: 'datos incorrectos' });
+        return;
     }
+});
+
+app.post('/persona/', (req, res) => {});
+
+app.delete('/persona/:id', (req, res) => {
+    const idPersona = Number(req.params.id);
+    const persona = listaPersonas.find((p) => p.id === idPersona);
+    if (!persona) {
+        res.status(404).json({ error: 'persona no existente' });
+        return;
+    }
+
+    listaPersonas = listaPersonas.filter((p) => p.id !== idPersona);
+
+    res.status(201).json(`se eliminó a la persona: ${persona?.nombre}`);
 });
 
 // Levantamos el servidor en el puerto que configuramos

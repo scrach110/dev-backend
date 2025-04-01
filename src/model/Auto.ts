@@ -6,6 +6,7 @@ interface Auto {
     color: string;
     numeroDeChasis: string;
     motor: string;
+    idPersona: number;
 }
 
 export default Auto;
