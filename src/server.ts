@@ -102,14 +102,15 @@ app.post('/login', (req, res) => {
 app.get('/personas', (req, res) => {
     console.log(req.body);
 
-    const personas = listaPersonas.map((p) => ({ nombre: p.nombre,apellido: p.apellido, DNI: p.dni }));
+    const personas = listaPersonas.map((p) => ({ nombre: p.nombre, apellido: p.apellido, DNI: p.dni }));
 
     res.json(personas);
 });
 
 app.get('/autos', (req, res) => {
-    const autos = listaPersonas.map(
-        (p) => p.autos.map((a) => ({marca: a.marca, modelo: a.modelo, año: a.año, patente: a.patente})));
+    const autos = listaPersonas.map((p) =>
+        p.autos.map((a) => ({ marca: a.marca, modelo: a.modelo, año: a.año, patente: a.patente }))
+    );
 
     res.json(autos);
 });
@@ -118,9 +119,7 @@ app.get('/autos/id', (req, res) => {
     const idPersona = Number(req.query.id);
 
     const persona = listaPersonas.find((p) => p.id === idPersona);
-    const autos = persona?.autos.map(
-        (a) => ({ marca: a.marca, modelo: a.modelo, año: a.año, patente: a.patente})
-    );
+    const autos = persona?.autos.map((a) => ({ marca: a.marca, modelo: a.modelo, año: a.año, patente: a.patente }));
 
     res.json(autos);
 });
@@ -138,12 +137,10 @@ app.get('/entidad/:id', (req, res) => {
     res.json(persona);
 });
 
-// TO DO
-
 app.post('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
 
-    let persona = listaPersonas.find((p) => p.id === idPersona);
+    const persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
         res.status(404).json({ error: 'ID inválido' });
@@ -151,16 +148,8 @@ app.post('/persona/:id', (req, res) => {
     }
 
     try {
+        const personaEdit: Partial<Persona> = req.body;
 
-
-        const personaEdit: Persona = req.body;
-
-        //personaEdit = {...persona};
-
-        persona = {...personaEdit};
-
-
-        /*
         persona.nombre = personaEdit.nombre ?? persona.nombre;
         persona.apellido = personaEdit.apellido ?? persona.apellido;
         persona.dni = personaEdit.dni ?? persona.dni;
@@ -169,43 +158,49 @@ app.post('/persona/:id', (req, res) => {
             : persona.fechaDeNacimiento;
         persona.genero = personaEdit.genero ?? persona.genero;
         persona.autos = personaEdit.autos ?? persona.autos;
-        */
+
         res.status(201).json({ 'persona actualizada': persona });
-        return;
     } catch (error) {
         console.log(error);
-        res.status(401).json({ error: 'datos incorrectos' });
-        return;
+        res.status(400).json({ error: 'Datos incorrectos' });
     }
 });
 
+// FALTA SOLUCIONAR LOS ERRORES EN GENERO;
+
 app.post('/persona', (req, res) => {
+    const { id, nombre, apellido, dni, fechaDeNacimiento, genero, autos } = req.body;
 
-    try {
+    if (
+        typeof id !== 'number' ||
+        typeof nombre !== 'string' ||
+        typeof apellido !== 'string' ||
+        typeof dni !== 'string' ||
+        typeof fechaDeNacimiento !== 'string' ||
+        typeof genero !== 'MASCULINO' ||
+        'FEMENINO' ||
+        'NO-BINARIO' ||
+        !Array.isArray(autos)
+    ) {
+        res.status(400).json({ error: 'datos incorrectos' });
+        return;
+    }
 
-    const personaCrear : Persona = {
-            id: req.body.id,
-            nombre: req.body.nombre,
-            apellido: req.body.apellido,
-            dni: req.body.dni,
-            fechaDeNacimiento: req.body.fechaDeNacimiento,
-            genero: req.body.genero,
-            autos: req.body.autos
-        }
+    const fechaNacimientoPersona = new Date(fechaDeNacimiento);
+
+    const personaCrear: Persona = {
+        id,
+        nombre,
+        apellido,
+        dni,
+        fechaNacimientoPersona,
+        genero,
+        autos
+    };
 
     listaPersonas.push(personaCrear);
-    res.status(200).json(personaCrear.nombre);
-
-    return;
-        }
-    catch (error) {
-        console.log(error);
-
-        res.status(400).json("los datos son incorrectos");
-        return;
-        }
-    }
-);
+    res.status(201).json({ persona: personaCrear });
+});
 
 app.delete('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
