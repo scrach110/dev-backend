@@ -5,8 +5,8 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import process from 'process';
 
-import Persona from './model/Persona';
-import Auto from './model/Auto';
+import Persona from './interfaces/Persona';
+import { listaPersonas } from './variables/listaPersonas';
 
 // Creamos nuestra app express
 const app = express();
@@ -18,73 +18,6 @@ const port = process.env.PORT || 9000;
 app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
-
-//Variables temporales de las interfaces
-const BMW: Auto = {
-    id: 1,
-    año: 2013,
-    color: 'Negro',
-    marca: 'BMW',
-    modelo: 'KANGOO',
-    motor: 'V6',
-    patente: 'FTW-231',
-    numeroDeChasis: '235325dsad',
-    idPersona: 3
-};
-
-const PORCHE: Auto = {
-    id: 2,
-    año: 2010,
-    color: 'Blanco',
-    marca: 'Porche',
-    modelo: 'lals',
-    motor: 'V8',
-    patente: 'JKW-231',
-    numeroDeChasis: '9213987FG',
-    idPersona: 1
-};
-
-const FIESTA: Auto = {
-    id: 3,
-    año: 2004,
-    color: 'Gris',
-    marca: 'Ford',
-    modelo: 'Fiesta',
-    motor: 'V2',
-    patente: 'PQW-532',
-    numeroDeChasis: 'JDFASFDJOLA121|',
-    idPersona: 2
-};
-
-let listaPersonas: Persona[] = [
-    {
-        id: 1,
-        nombre: 'Cleopatra',
-        apellido: 'Fiorito',
-        dni: '-3123412412',
-        fechaDeNacimiento: new Date(1, 2, 12),
-        genero: 'FEMENINO',
-        autos: [PORCHE]
-    },
-    {
-        id: 2,
-        nombre: 'Fausto',
-        apellido: 'Lugano',
-        dni: '523523521',
-        fechaDeNacimiento: new Date(2003, 5, 13),
-        genero: 'NO-BINARIO',
-        autos: [FIESTA]
-    },
-    {
-        id: 3,
-        nombre: 'Ricardo',
-        apellido: 'Faustino',
-        dni: '12342134',
-        fechaDeNacimiento: new Date(1990, 2, 27),
-        genero: 'MASCULINO',
-        autos: [BMW]
-    }
-];
 
 // Mis endpoints van acá
 app.get('/', (req, res) => {
@@ -137,13 +70,18 @@ app.get('/entidad/:id', (req, res) => {
     res.json(persona);
 });
 
-app.post('/persona/:id', (req, res) => {
+app.put('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
 
     const persona = listaPersonas.find((p) => p.id === idPersona);
 
     if (!persona) {
         res.status(404).json({ error: 'ID inválido' });
+        return;
+    }
+
+    if (isNaN(Date.parse(req.body.fechaDeNacimiento))) {
+        res.status(404).json({ error: 'fecha invalida' });
         return;
     }
 
@@ -171,15 +109,21 @@ app.post('/persona/:id', (req, res) => {
 app.post('/persona', (req, res) => {
     const { id, nombre, apellido, dni, fechaDeNacimiento, genero, autos } = req.body;
 
+    const generosDisponibles = ['MASCULINO', 'FEMENINO', 'NO-BINARIO'];
+
     if (
         typeof id !== 'number' ||
         typeof nombre !== 'string' ||
         typeof apellido !== 'string' ||
         typeof dni !== 'string' ||
-        typeof fechaDeNacimiento !== 'string' ||
+        //typeof fechaDeNacimiento !== 'string' ||
+        isNaN(Date.parse(fechaDeNacimiento)) ||
+        /*
         typeof genero !== 'MASCULINO' ||
         'FEMENINO' ||
-        'NO-BINARIO' ||
+        'NO-BINARIO'
+        */
+        !generosDisponibles.includes(genero) ||
         !Array.isArray(autos)
     ) {
         res.status(400).json({ error: 'datos incorrectos' });
@@ -193,7 +137,7 @@ app.post('/persona', (req, res) => {
         nombre,
         apellido,
         dni,
-        fechaNacimientoPersona,
+        fechaDeNacimiento: fechaNacimientoPersona,
         genero,
         autos
     };
@@ -204,15 +148,18 @@ app.post('/persona', (req, res) => {
 
 app.delete('/persona/:id', (req, res) => {
     const idPersona = Number(req.params.id);
-    const persona = listaPersonas.find((p) => p.id === idPersona);
-    if (!persona) {
-        res.status(404).json({ error: 'persona no existente' });
+
+    const indexPersonaEliminar = listaPersonas.findIndex((p) => p.id === idPersona);
+
+    if (indexPersonaEliminar === -1) {
+        res.status(404).json({ error: 'la persona no existe' });
         return;
     }
 
-    listaPersonas = listaPersonas.filter((p) => p.id !== idPersona);
+    const personaEliminada = listaPersonas[indexPersonaEliminar];
+    listaPersonas.splice(indexPersonaEliminar, 1);
 
-    res.status(201).json(`se eliminó a la persona: ${persona?.nombre}`);
+    res.status(200).json(`se logró eliminar a la persona: ${personaEliminada.nombre}`);
 });
 
 // Levantamos el servidor en el puerto que configuramos

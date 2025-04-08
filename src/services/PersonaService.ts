@@ -1,0 +1,101 @@
+// Acá tengo que poner la logica y sacarla del controller
+/*
+import Persona from '../interfaces/Persona';
+import Auto from '../interfaces/Auto';
+import { listaPersonas } from '../variables/listaPersonas';
+
+const PersonaService = () => {
+    const obtenerPersonas = (): { nombre: string; apellido: string; DNI: string }[] => {
+        return listaPersonas.map((p) => ({
+            nombre: p.nombre,
+            apellido: p.apellido,
+            DNI: p.dni
+        }));
+    };
+
+    const entidadCompleta = (id: number): Persona | undefined => {
+        const persona = listaPersonas.find((p) => p.id === id);
+        return persona;
+    };
+
+    const actualizarPersona = (id: number, cambios: Partial<Persona>): Persona | null | string => {
+        const persona = listaPersonas.find((p) => p.id === id);
+        if (!persona) {
+            return null;
+        }
+
+        persona.nombre = cambios.nombre ?? persona.nombre;
+        persona.apellido = cambios.apellido ?? persona.apellido;
+        persona.dni = cambios.dni ?? persona.dni;
+        persona.fechaDeNacimiento = cambios.fechaDeNacimiento
+            ? new Date(cambios.fechaDeNacimiento)
+            : persona.fechaDeNacimiento;
+        persona.genero = cambios.genero ?? persona.genero;
+        persona.autos = cambios.autos ?? persona.autos;
+
+        return persona;
+    };
+
+    const agregarPersona = (
+        id: number,
+        nombre: string,
+        apellido: string,
+        dni: string,
+        fechaDeNacimiento: string,
+        genero: string,
+        autos: Auto[]
+    ): Persona | null => {
+        const generosDisponibles = ['MASCULINO', 'FEMENINI', 'NO-BINARIOS'];
+
+        if (
+            typeof id !== 'number' ||
+            typeof nombre !== 'string' ||
+            typeof apellido !== 'string' ||
+            typeof dni !== 'string' ||
+            !generosDisponibles.includes(genero) ||
+            !Array.isArray(autos)
+        ) {
+            return null;
+        }
+        const fechaNacimientoPersona = new Date(fechaDeNacimiento);
+        if (isNaN(fechaNacimientoPersona.getTime())) {
+            return null;
+        }
+
+        const personaCrear: Persona = {
+            id,
+            nombre,
+            apellido,
+            dni,
+            fechaDeNacimiento: fechaNacimientoPersona,
+            genero,
+            autos
+        };
+
+        listaPersonas.push(personaCrear);
+        return personaCrear;
+    };
+
+    const eliminarPersona = (id: number): Persona | null => {
+        const indexPersona = listaPersonas.findIndex((p) => p.id === id);
+        if (indexPersona === -1) {
+            return null;
+        }
+
+        const personaEliminada = listaPersonas[indexPersona];
+        listaPersonas.splice(indexPersona, 1);
+        return personaEliminada;
+    };
+
+    return {
+        obtenerPersonas,
+        entidadCompleta,
+        actualizarPersona,
+        eliminarPersona,
+        agregarPersona
+    };
+};
+
+export default PersonaService;
+
+*/
