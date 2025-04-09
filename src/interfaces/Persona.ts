@@ -1,4 +1,5 @@
 import Auto from './Auto';
+import Genero from './Genero';
 
 interface Persona {
     id: number;
@@ -6,7 +7,7 @@ interface Persona {
     apellido: string;
     dni: string;
     fechaDeNacimiento: Date;
-    genero: 'MASCULINO' | 'FEMENINO' | 'NO-BINARIO';
+    genero: Genero;
     autos: Auto[];
 }
 

@@ -1,8 +1,7 @@
-// Acá tengo que poner la logica y sacarla del controller
-/*
 import Persona from '../interfaces/Persona';
 import Auto from '../interfaces/Auto';
 import { listaPersonas } from '../variables/listaPersonas';
+import Genero from '../interfaces/Genero';
 
 const PersonaService = () => {
     const obtenerPersonas = (): { nombre: string; apellido: string; DNI: string }[] => {
@@ -18,7 +17,7 @@ const PersonaService = () => {
         return persona;
     };
 
-    const actualizarPersona = (id: number, cambios: Partial<Persona>): Persona | null | string => {
+    const actualizarPersona = (id: number, cambios: Partial<Persona>): Persona | null => {
         const persona = listaPersonas.find((p) => p.id === id);
         if (!persona) {
             return null;
@@ -45,7 +44,7 @@ const PersonaService = () => {
         genero: string,
         autos: Auto[]
     ): Persona | null => {
-        const generosDisponibles = ['MASCULINO', 'FEMENINI', 'NO-BINARIOS'];
+        const generosDisponibles = ['masculino', 'femenino', 'no-binario'];
 
         if (
             typeof id !== 'number' ||
@@ -68,7 +67,7 @@ const PersonaService = () => {
             apellido,
             dni,
             fechaDeNacimiento: fechaNacimientoPersona,
-            genero,
+            genero: genero as Genero,
             autos
         };
 
@@ -76,15 +75,14 @@ const PersonaService = () => {
         return personaCrear;
     };
 
-    const eliminarPersona = (id: number): Persona | null => {
+    const eliminarPersona = (id: number): boolean => {
         const indexPersona = listaPersonas.findIndex((p) => p.id === id);
         if (indexPersona === -1) {
-            return null;
+            return false;
         }
 
-        const personaEliminada = listaPersonas[indexPersona];
         listaPersonas.splice(indexPersona, 1);
-        return personaEliminada;
+        return true;
     };
 
     return {
@@ -97,5 +95,3 @@ const PersonaService = () => {
 };
 
 export default PersonaService;
-
-*/

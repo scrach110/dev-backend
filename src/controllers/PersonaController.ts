@@ -1,20 +1,16 @@
-/*
-import Persona from '../interfaces/Persona';
-import app from '../server';
-import { listaPersonas } from '../variables/listaPersonas';
 import PersonaService from '../services/PersonaService';
-import { error } from 'console';
 
+import { Router } from 'express';
 
-const PersonaController = () => {
+const PersonaController = (router: Router) => {
     const personaService = PersonaService();
 
-    app.get('/personas', (req, res) => {
+    router.get('/personas', (req, res) => {
         const personas = personaService.obtenerPersonas();
         res.json(personas);
     });
 
-    app.get('/entidad/:id', (req, res) => {
+    router.get('/entidad/:id', (req, res) => {
         const idPersona = Number(req.params.id);
 
         const persona = personaService.entidadCompleta(idPersona);
@@ -27,44 +23,41 @@ const PersonaController = () => {
         res.json(persona);
     });
 
-    app.put('/persona/:id', (req, res) => {
+    router.put('/persona/:id', (req, res) => {
         const idPersona = Number(req.params.id);
 
         const persona = personaService.actualizarPersona(idPersona, req.body);
 
-        if(!persona){
-            res.status(400).json({error : "datos incorrectos"})
+        if (!persona) {
+            res.status(400).json({ error: 'datos incorrectos' });
             return;
         }
 
         res.status(201).json(persona);
     });
 
-    app.post('/persona', (req, res) => {
+    router.post('/persona', (req, res) => {
         const { id, nombre, apellido, dni, fechaDeNacimiento, genero, autos } = req.body;
-        const persona = personaService.agregarPersona(id,nombre,apellido,dni,fechaDeNacimiento,genero,autos);
+        const persona = personaService.agregarPersona(id, nombre, apellido, dni, fechaDeNacimiento, genero, autos);
 
-        if(!persona){
+        if (!persona) {
             res.status(400).json({ error: 'datos incorrectos' });
             return;
         }
 
-        res.status(201).json({persona: persona})
-
+        res.status(201).json({ persona: persona });
     });
 
-    app.delete('/persona/:id', (req, res) => {
-    const idPersona = Number(req.params.id);
-    const persona = personaService.eliminarPersona(idPersona);
+    router.delete('/persona/:id', (req, res) => {
+        const idPersona = Number(req.params.id);
+        const eliminada = personaService.eliminarPersona(idPersona);
 
-    if(!persona){
-        res.status(404).json({error:"la persona no existe"});
-        return;
-    }
+        if (!eliminada) {
+            res.status(404).json({ error: 'la persona no existe' });
+            return;
+        }
 
-    res.status(200).json('se logró eliminar a la persona');
-});
-
+        res.status(200).json('se logró eliminar a la persona');
+    });
+};
 export default PersonaController;
-
-*/
