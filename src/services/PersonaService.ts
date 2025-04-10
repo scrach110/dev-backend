@@ -23,6 +23,8 @@ const PersonaService = () => {
             return null;
         }
 
+        // FALTA LA VALIDACION DE TIPOS, QUE ES UN TYPEOF DE SI ES DISTINTO DE UNDEFINED Y DEL TIPO DEL CAMPO: EJ STRING
+
         persona.nombre = cambios.nombre ?? persona.nombre;
         persona.apellido = cambios.apellido ?? persona.apellido;
         persona.dni = cambios.dni ?? persona.dni;

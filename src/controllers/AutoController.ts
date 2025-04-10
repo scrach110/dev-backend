@@ -81,7 +81,7 @@ const autoController = (router: Router) => {
             res.status(404).json({ error: 'no se encontro el auto' });
         }
 
-        res.status(200).json();
+        res.status(201).json('Auto eliminado');
     });
 };
 export default autoController;
