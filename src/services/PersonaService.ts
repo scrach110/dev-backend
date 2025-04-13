@@ -23,6 +23,17 @@ const PersonaService = () => {
             return null;
         }
 
+        if (
+            (cambios.nombre !== undefined && typeof cambios.nombre !== 'string') ||
+            (cambios.apellido !== undefined && typeof cambios.apellido !== 'string') ||
+            (cambios.dni !== undefined && typeof cambios.dni !== 'string') ||
+            (cambios.fechaDeNacimiento !== undefined && typeof cambios.fechaDeNacimiento !== 'string') ||
+            (cambios.genero !== undefined && typeof cambios.genero !== 'string') ||
+            (cambios.autos !== undefined && !Array.isArray(cambios.autos))
+        ) {
+            return null;
+        }
+
         // FALTA LA VALIDACION DE TIPOS, QUE ES UN TYPEOF DE SI ES DISTINTO DE UNDEFINED Y DEL TIPO DEL CAMPO: EJ STRING
 
         persona.nombre = cambios.nombre ?? persona.nombre;

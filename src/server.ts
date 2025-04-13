@@ -13,7 +13,14 @@ const port = process.env.PORT || 9000;
 
 // Configuramos los plugins
 // Más adelante intentaremos entender mejor cómo funcionan estos plugins
-app.use(cors());
+//app.use(cors());
+app.use(
+    cors({
+        origin: 'http://localhost:5173',
+        credentials: true
+    })
+);
+
 app.use(helmet());
 app.use(express.json());
 
