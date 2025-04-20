@@ -1,3 +1,3 @@
-type Genero = 'MASCULINO' | 'FEMENINO' | 'NO-BINARIO';
+type Genero = 'masculino' | 'femenino' | 'no-binario';
 
 export default Genero;

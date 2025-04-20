@@ -2,22 +2,24 @@ import Persona from '../interfaces/Persona';
 import Auto from '../interfaces/Auto';
 import { listaPersonas } from '../variables/listaPersonas';
 import Genero from '../interfaces/Genero';
+import { randomUUID } from 'crypto';
 
 const PersonaService = () => {
-    const obtenerPersonas = (): { nombre: string; apellido: string; DNI: string }[] => {
+    const obtenerPersonas = (): { id: string; nombre: string; apellido: string; DNI: string }[] => {
         return listaPersonas.map((p) => ({
+            id: p.id,
             nombre: p.nombre,
             apellido: p.apellido,
             DNI: p.dni
         }));
     };
 
-    const entidadCompleta = (id: number): Persona | undefined => {
+    const entidadCompleta = (id: string): Persona | undefined => {
         const persona = listaPersonas.find((p) => p.id === id);
         return persona;
     };
 
-    const actualizarPersona = (id: number, cambios: Partial<Persona>): Persona | null => {
+    const actualizarPersona = (id: string, cambios: Partial<Persona>): Persona | null => {
         const persona = listaPersonas.find((p) => p.id === id);
         if (!persona) {
             return null;
@@ -34,8 +36,6 @@ const PersonaService = () => {
             return null;
         }
 
-        // FALTA LA VALIDACION DE TIPOS, QUE ES UN TYPEOF DE SI ES DISTINTO DE UNDEFINED Y DEL TIPO DEL CAMPO: EJ STRING
-
         persona.nombre = cambios.nombre ?? persona.nombre;
         persona.apellido = cambios.apellido ?? persona.apellido;
         persona.dni = cambios.dni ?? persona.dni;
@@ -49,7 +49,6 @@ const PersonaService = () => {
     };
 
     const agregarPersona = (
-        id: number,
         nombre: string,
         apellido: string,
         dni: string,
@@ -60,7 +59,6 @@ const PersonaService = () => {
         const generosDisponibles = ['masculino', 'femenino', 'no-binario'];
 
         if (
-            typeof id !== 'number' ||
             typeof nombre !== 'string' ||
             typeof apellido !== 'string' ||
             typeof dni !== 'string' ||
@@ -75,7 +73,7 @@ const PersonaService = () => {
         }
 
         const personaCrear: Persona = {
-            id,
+            id: randomUUID(),
             nombre,
             apellido,
             dni,
@@ -88,7 +86,7 @@ const PersonaService = () => {
         return personaCrear;
     };
 
-    const eliminarPersona = (id: number): boolean => {
+    const eliminarPersona = (id: string): boolean => {
         const indexPersona = listaPersonas.findIndex((p) => p.id === id);
         if (indexPersona === -1) {
             return false;

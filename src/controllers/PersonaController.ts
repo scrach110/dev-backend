@@ -5,13 +5,13 @@ import { Router } from 'express';
 const PersonaController = (router: Router) => {
     const personaService = PersonaService();
 
-    router.get('/personas', (req, res) => {
+    router.get('/persona/all', (req, res) => {
         const personas = personaService.obtenerPersonas();
         res.json(personas);
     });
 
-    router.get('/entidad/:id', (req, res) => {
-        const idPersona = Number(req.params.id);
+    router.get('/persona/:id', (req, res) => {
+        const idPersona = String(req.params.id);
 
         const persona = personaService.entidadCompleta(idPersona);
 
@@ -24,7 +24,7 @@ const PersonaController = (router: Router) => {
     });
 
     router.put('/persona/:id', (req, res) => {
-        const idPersona = Number(req.params.id);
+        const idPersona = String(req.params.id);
 
         const persona = personaService.actualizarPersona(idPersona, req.body);
 
@@ -37,8 +37,8 @@ const PersonaController = (router: Router) => {
     });
 
     router.post('/persona', (req, res) => {
-        const { id, nombre, apellido, dni, fechaDeNacimiento, genero, autos } = req.body;
-        const persona = personaService.agregarPersona(id, nombre, apellido, dni, fechaDeNacimiento, genero, autos);
+        const { nombre, apellido, dni, fechaDeNacimiento, genero, autos } = req.body;
+        const persona = personaService.agregarPersona(nombre, apellido, dni, fechaDeNacimiento, genero, autos);
 
         if (!persona) {
             res.status(400).json({ error: 'datos incorrectos' });
@@ -49,7 +49,7 @@ const PersonaController = (router: Router) => {
     });
 
     router.delete('/persona/:id', (req, res) => {
-        const idPersona = Number(req.params.id);
+        const idPersona = String(req.params.id);
         const eliminada = personaService.eliminarPersona(idPersona);
 
         if (!eliminada) {

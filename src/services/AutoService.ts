@@ -13,7 +13,7 @@ const AutoService = () => {
         );
     };
 
-    const autosPorId = (id: number) => {
+    const autosPorId = (id: string) => {
         try {
             const persona = listaPersonas.find((p) => p.id === id);
             const autos = persona?.autos.map((a) => ({
@@ -65,7 +65,7 @@ const AutoService = () => {
         color: string,
         numeroDeChasis: string,
         motor: string,
-        idPersona: number
+        idPersona: string
     ): Auto | null => {
         if (
             typeof id !== 'number' ||
@@ -94,7 +94,7 @@ const AutoService = () => {
         return autoCrear;
     };
 
-    const agregarAutoPersona = (auto: Auto, idPersona: number): boolean => {
+    const agregarAutoPersona = (auto: Auto, idPersona: string): boolean => {
         const persona = listaPersonas.find((p) => p.id === idPersona);
         if (!persona) {
             return false;

@@ -9,7 +9,7 @@ const autoController = (router: Router) => {
     });
 
     router.get('/autos/:id', (req, res) => {
-        const idPersona = Number(req.params.id);
+        const idPersona = String(req.params.id);
         const autos = autoService.autosPorId(idPersona);
         if (!autos) {
             res.status(400).json({ error: 'persona no existente' });
