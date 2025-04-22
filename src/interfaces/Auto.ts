@@ -1,5 +1,5 @@
 interface Auto {
-    id: number;
+    id: string;
     marca: string;
     modelo: string;
     año: number;

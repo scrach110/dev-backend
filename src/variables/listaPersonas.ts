@@ -2,7 +2,7 @@ import Auto from '../interfaces/Auto';
 import Persona from '../interfaces/Persona';
 
 const BMW: Auto = {
-    id: 1,
+    id: '1',
     año: 2013,
     color: 'Negro',
     marca: 'BMW',
@@ -14,7 +14,7 @@ const BMW: Auto = {
 };
 
 const PORCHE: Auto = {
-    id: 2,
+    id: '2',
     año: 2010,
     color: 'Blanco',
     marca: 'Porche',
@@ -26,7 +26,7 @@ const PORCHE: Auto = {
 };
 
 const FIESTA: Auto = {
-    id: 3,
+    id: '3',
     año: 2004,
     color: 'Gris',
     marca: 'Ford',

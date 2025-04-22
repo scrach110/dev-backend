@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
 import { listaPersonas } from '../variables/listaPersonas';
 
@@ -5,6 +6,7 @@ const AutoService = () => {
     const obtenerTodosLosAutos = () => {
         return listaPersonas.flatMap((p) =>
             p.autos.map((a) => ({
+                id: a.id,
                 marca: a.marca,
                 modelo: a.modelo,
                 año: a.año,
@@ -29,13 +31,13 @@ const AutoService = () => {
         }
     };
 
-    const autoPorIdAuto = (id: number): Auto | undefined => {
+    const autoPorIdAuto = (id: string): Auto | undefined => {
         const personaAuto = listaPersonas.find((persona) => persona.autos.some((auto) => auto.id === id));
         const auto = personaAuto?.autos.find((auto) => auto.id === id);
         return auto;
     };
 
-    const editarAuto = (id: number, cambios: Partial<Auto>): Auto | null => {
+    const editarAuto = (id: string, cambios: Partial<Auto>): Auto | null => {
         const persona = listaPersonas.find((p) => p.autos.find((a) => a.id === id));
         if (!persona) {
             return null;
@@ -58,7 +60,6 @@ const AutoService = () => {
     };
 
     const crearAuto = (
-        id: number,
         marca: string,
         modelo: string,
         año: number,
@@ -69,7 +70,6 @@ const AutoService = () => {
         idPersona: string
     ): Auto | null => {
         if (
-            typeof id !== 'number' ||
             typeof marca !== 'string' ||
             typeof modelo !== 'string' ||
             typeof año !== 'number' ||
@@ -77,12 +77,12 @@ const AutoService = () => {
             typeof color !== 'string' ||
             typeof numeroDeChasis !== 'string' ||
             typeof motor !== 'string' ||
-            typeof idPersona !== 'number'
+            typeof idPersona !== 'string'
         ) {
             return null;
         }
         const autoCrear: Auto = {
-            id: id,
+            id: randomUUID(),
             marca: marca,
             modelo: modelo,
             año: año,
@@ -105,7 +105,7 @@ const AutoService = () => {
         return true;
     };
 
-    const eliminarAuto = (id: number): boolean => {
+    const eliminarAuto = (id: string): boolean => {
         const persona = listaPersonas.find((p) => p.autos.find((a) => a.id === id));
         if (!persona) {
             return false;

@@ -3,7 +3,7 @@ import AutoService from '../services/AutoService';
 
 const autoController = (router: Router) => {
     const autoService = AutoService();
-    router.get('/autos', (req, res) => {
+    router.get('/auto', (req, res) => {
         const autos = autoService.obtenerTodosLosAutos();
         res.json(autos);
     });
@@ -19,7 +19,7 @@ const autoController = (router: Router) => {
     });
 
     router.get('/auto/:id', (req, res) => {
-        const idAuto = Number(req.params.id);
+        const idAuto = String(req.params.id);
 
         const auto = autoService.autoPorIdAuto(idAuto);
 
@@ -32,7 +32,7 @@ const autoController = (router: Router) => {
     });
 
     router.put('/auto/:id', (req, res) => {
-        const idAuto = Number(req.params.id);
+        const idAuto = String(req.params.id);
 
         const auto = autoService.editarAuto(idAuto, req.body);
 
@@ -45,10 +45,9 @@ const autoController = (router: Router) => {
     });
 
     router.post('/auto', (req, res) => {
-        const { id, marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
+        const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
 
         const autoCreado = autoService.crearAuto(
-            id,
             marca,
             modelo,
             año,
@@ -73,7 +72,7 @@ const autoController = (router: Router) => {
     });
 
     router.delete('/auto/:id', (req, res) => {
-        const idAuto = Number(req.params.id);
+        const idAuto = String(req.params.id);
 
         const eliminado = autoService.eliminarAuto(idAuto);
 
