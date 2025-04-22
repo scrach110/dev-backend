@@ -8,7 +8,8 @@ const AutoService = () => {
                 marca: a.marca,
                 modelo: a.modelo,
                 año: a.año,
-                patente: a.patente
+                patente: a.patente,
+                idPersona: a.idPersona
             }))
         );
     };
