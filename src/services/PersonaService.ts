@@ -31,6 +31,7 @@ const PersonaService = () => {
             (cambios.dni !== undefined && typeof cambios.dni !== 'string') ||
             (cambios.fechaDeNacimiento !== undefined && typeof cambios.fechaDeNacimiento !== 'string') ||
             (cambios.genero !== undefined && typeof cambios.genero !== 'string') ||
+            (cambios.donanteOrganos !== undefined && typeof cambios.donanteOrganos !== 'boolean') ||
             (cambios.autos !== undefined && !Array.isArray(cambios.autos))
         ) {
             return null;
@@ -43,6 +44,7 @@ const PersonaService = () => {
             ? new Date(cambios.fechaDeNacimiento)
             : persona.fechaDeNacimiento;
         persona.genero = cambios.genero ?? persona.genero;
+        persona.donanteOrganos = cambios.donanteOrganos ?? persona.donanteOrganos;
         persona.autos = cambios.autos ?? persona.autos;
 
         return persona;
@@ -54,6 +56,7 @@ const PersonaService = () => {
         dni: string,
         fechaDeNacimiento: string,
         genero: string,
+        donanteOrganos: boolean,
         autos: Auto[]
     ): Persona | null => {
         const generosDisponibles = ['masculino', 'femenino', 'no-binario'];
@@ -79,6 +82,7 @@ const PersonaService = () => {
             dni,
             fechaDeNacimiento: fechaNacimientoPersona,
             genero: genero as Genero,
+            donanteOrganos,
             autos
         };
 

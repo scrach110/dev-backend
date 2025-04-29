@@ -8,6 +8,7 @@ interface Persona {
     dni: string;
     fechaDeNacimiento: Date;
     genero: Genero;
+    donanteOrganos: boolean;
     autos: Auto[];
 }
 

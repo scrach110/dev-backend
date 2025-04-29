@@ -47,16 +47,7 @@ const autoController = (router: Router) => {
     router.post('/auto', (req, res) => {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
 
-        const autoCreado = autoService.crearAuto(
-            marca,
-            modelo,
-            año,
-            patente,
-            color,
-            numeroDeChasis,
-            motor,
-            idPersona
-        );
+        const autoCreado = autoService.crearAuto(marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona);
 
         if (!autoCreado) {
             res.status(400).json({ error: 'datos incorrectos' });
@@ -80,7 +71,7 @@ const autoController = (router: Router) => {
             res.status(404).json({ error: 'no se encontro el auto' });
         }
 
-        res.status(201).json('Auto eliminado');
+        res.status(200).json('Auto eliminado');
     });
 };
 export default autoController;

@@ -37,6 +37,18 @@ const FIESTA: Auto = {
     idPersona: '2'
 };
 
+const FARAON: Auto = {
+    id: '4',
+    año: 2005,
+    color: 'Azul',
+    marca: 'Renault',
+    modelo: 'B1241',
+    motor: 'V1',
+    patente: 'ADS-532',
+    numeroDeChasis: 'DFSDAFSDAFEW11|',
+    idPersona: '1'
+};
+
 // eslint-disable-next-line prefer-const
 let listaPersonas: Persona[] = [
     {
@@ -46,7 +58,8 @@ let listaPersonas: Persona[] = [
         dni: '-3123412412',
         fechaDeNacimiento: new Date(1, 2, 12),
         genero: 'femenino',
-        autos: [PORCHE]
+        donanteOrganos: true,
+        autos: [PORCHE, FARAON]
     },
     {
         id: '2',
@@ -55,6 +68,7 @@ let listaPersonas: Persona[] = [
         dni: '523523521',
         fechaDeNacimiento: new Date(2003, 5, 13),
         genero: 'no-binario',
+        donanteOrganos: false,
         autos: [FIESTA]
     },
     {
@@ -64,6 +78,7 @@ let listaPersonas: Persona[] = [
         dni: '12342134',
         fechaDeNacimiento: new Date(1990, 2, 27),
         genero: 'masculino',
+        donanteOrganos: true,
         autos: [BMW]
     }
 ];

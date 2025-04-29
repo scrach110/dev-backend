@@ -37,8 +37,16 @@ const PersonaController = (router: Router) => {
     });
 
     router.post('/persona', (req, res) => {
-        const { nombre, apellido, dni, fechaDeNacimiento, genero, autos } = req.body;
-        const persona = personaService.agregarPersona(nombre, apellido, dni, fechaDeNacimiento, genero, autos);
+        const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = req.body;
+        const persona = personaService.agregarPersona(
+            nombre,
+            apellido,
+            dni,
+            fechaDeNacimiento,
+            genero,
+            donanteOrganos,
+            autos
+        );
 
         if (!persona) {
             res.status(400).json({ error: 'datos incorrectos' });
