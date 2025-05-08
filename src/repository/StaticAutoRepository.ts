@@ -1,9 +1,10 @@
-/*import { randomUUID } from 'crypto';
+import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
 import { IRepository } from './IRepository';
 import { listaPersonas } from './listaPersonas';
+import { IAutoRepository } from './IAutoRepository';
 
-export class StaticAutoRepository implements IRepository<Auto> {
+export class StaticAutoRepository implements IAutoRepository {
     findAll(): Auto[] {
         return listaPersonas.flatMap((p) => p.autos);
     }
@@ -94,4 +95,4 @@ export class StaticAutoRepository implements IRepository<Auto> {
         return true;
     }
 }
-*/
+

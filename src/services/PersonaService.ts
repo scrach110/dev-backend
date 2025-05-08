@@ -20,7 +20,7 @@ const PersonaService = () => {
         }));
     };
 
-    const entidadCompleta = (id: string): Persona | undefined => {
+    const entidadCompleta = (id: string): Persona | Persona[] | undefined => {
         const persona = repository.findById(id);
         return persona;
     };

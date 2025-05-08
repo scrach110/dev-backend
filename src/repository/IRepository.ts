@@ -1,6 +1,6 @@
 export interface IRepository<T> {
     findAll(): T[];
-    findById(id: string): T | undefined;
+    findById(id: string): T | T[] | undefined;
     save(entity: T): T | null;
     update(id: string, entity: Partial<T>): T | null;
     delete(id: string): boolean;

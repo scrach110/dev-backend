@@ -1,10 +1,10 @@
 import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
 import { listaPersonas } from '../repository/listaPersonas';
-//import { RepositoryFactory } from '../repository/RepositoryFactory';
+import { RepositoryFactory } from '../repository/RepositoryFactory';
 
 const AutoService = () => {
-    /*
+
     const repository = RepositoryFactory.autoRepository();
 
     const obtenerTodosLosAutos = () => {
@@ -25,16 +25,48 @@ const AutoService = () => {
 
         if (!autos) {
             return null;
-        } else {
-            return autos.map((a) => ({
-                marca: a.marca,
-                modelo: a.modelo,
-                año: a.año,
-                patente: a.patente
-            }));
         }
+
+        return autos.map((a) => ({
+            marca: a.marca,
+            modelo: a.modelo,
+            año: a.año,
+            patente: a.patente
+            }));
+
     };
-    */
+
+    const autoPorIdAuto = (id: string) => {
+        const auto = repository.findByIdAuto(id);
+
+        return auto;
+    }
+
+    const editarAuto = (id: string, cambios: Partial<Auto>): Auto | null =>{
+        const autoEditado = repository.update(id, cambios);
+
+        return autoEditado;
+    }
+
+    const crearAuto = (auto: Auto) : Auto | null => {
+        const autoCreado = repository.save(auto);
+
+        return autoCreado;
+    }
+
+    const agregarAutoPersona = (auto: Auto, idPersona: string) : boolean =>{
+        const resultado = repository.saveAutoInPersona(auto, idPersona);
+
+        return resultado;
+    }
+
+    const eliminarAuto = (idAuto : string): boolean =>{
+        const resultado = repository.delete(idAuto);
+
+        return resultado;
+    }
+
+    /*
 
     const obtenerTodosLosAutos = () => {
         return listaPersonas.flatMap((p) =>
@@ -147,7 +179,7 @@ const AutoService = () => {
         persona.autos.splice(eliminadoIndex, 1);
         return true;
     };
-
+*/
     return {
         obtenerTodosLosAutos,
         autosPorId,

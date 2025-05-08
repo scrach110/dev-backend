@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import AutoService from '../services/AutoService';
+import Auto from '../interfaces/Auto';
 
 const autoController = (router: Router) => {
     const autoService = AutoService();
@@ -47,7 +48,19 @@ const autoController = (router: Router) => {
     router.post('/auto', (req, res) => {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
 
-        const autoCreado = autoService.crearAuto(marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona);
+        const autoAgregar: Auto ={
+            id: 'null',
+            marca: marca,
+            modelo: modelo,
+            año: año,
+            patente: patente,
+            color: color,
+            numeroDeChasis: numeroDeChasis,
+            motor: motor,
+            idPersona: idPersona
+        }
+
+        const autoCreado = autoService.crearAuto(autoAgregar);
 
         if (!autoCreado) {
             res.status(400).json({ error: 'datos incorrectos' });
