@@ -1,8 +1,41 @@
 import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
-import { listaPersonas } from '../variables/listaPersonas';
+import { listaPersonas } from '../repository/listaPersonas';
+//import { RepositoryFactory } from '../repository/RepositoryFactory';
 
 const AutoService = () => {
+    /*
+    const repository = RepositoryFactory.autoRepository();
+
+    const obtenerTodosLosAutos = () => {
+        const autos = repository.findAll();
+
+        return autos.map((a) => ({
+            id: a.id,
+            marca: a.marca,
+            modelo: a.modelo,
+            año: a.año,
+            patente: a.patente,
+            idPersona: a.idPersona
+        }));
+    };
+
+    const autosPorId = (id: string) => {
+        const autos = repository.findById(id);
+
+        if (!autos) {
+            return null;
+        } else {
+            return autos.map((a) => ({
+                marca: a.marca,
+                modelo: a.modelo,
+                año: a.año,
+                patente: a.patente
+            }));
+        }
+    };
+    */
+
     const obtenerTodosLosAutos = () => {
         return listaPersonas.flatMap((p) =>
             p.autos.map((a) => ({

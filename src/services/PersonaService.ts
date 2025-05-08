@@ -1,11 +1,55 @@
 import Persona from '../interfaces/Persona';
+/*
 import Auto from '../interfaces/Auto';
-import { listaPersonas } from '../variables/listaPersonas';
+import { listaPersonas } from '../repository/listaPersonas';
 import Genero from '../interfaces/Genero';
 import { randomUUID } from 'crypto';
+*/
+import { RepositoryFactory } from '../repository/RepositoryFactory';
 
 const PersonaService = () => {
+    const repository = RepositoryFactory.personaRepository();
+
     const obtenerPersonas = (): { id: string; nombre: string; apellido: string; DNI: string }[] => {
+        const personas = repository.findAll();
+        return personas.map((p) => ({
+            id: p.id,
+            nombre: p.nombre,
+            apellido: p.apellido,
+            DNI: p.dni
+        }));
+    };
+
+    const entidadCompleta = (id: string): Persona | undefined => {
+        const persona = repository.findById(id);
+        return persona;
+    };
+
+    const actualizarPersona = (id: string, cambios: Partial<Persona>): Persona | null => {
+        const personaActualizada = repository.update(id, cambios);
+
+        return personaActualizada;
+    };
+
+    const agregarPersona = (persona: Persona): Persona | null => {
+        const personaCreada = repository.save(persona);
+
+        return personaCreada;
+    };
+
+    const eliminarPersona = (id: string): boolean => {
+        return repository.delete(id);
+    };
+
+    return {
+        obtenerPersonas,
+        entidadCompleta,
+        actualizarPersona,
+        eliminarPersona,
+        agregarPersona
+    };
+
+    /* const obtenerPersonas = (): { id: string; nombre: string; apellido: string; DNI: string }[] => {
         return listaPersonas.map((p) => ({
             id: p.id,
             nombre: p.nombre,
@@ -108,5 +152,6 @@ const PersonaService = () => {
         agregarPersona
     };
 };
-
+*/
+};
 export default PersonaService;

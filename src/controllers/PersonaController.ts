@@ -1,3 +1,4 @@
+import Persona from '../interfaces/Persona';
 import PersonaService from '../services/PersonaService';
 
 import { Router } from 'express';
@@ -38,6 +39,7 @@ const PersonaController = (router: Router) => {
 
     router.post('/persona', (req, res) => {
         const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = req.body;
+        /*
         const persona = personaService.agregarPersona(
             nombre,
             apellido,
@@ -47,6 +49,19 @@ const PersonaController = (router: Router) => {
             donanteOrganos,
             autos
         );
+*/
+        const personaAgregar: Persona = {
+            id: 'null',
+            nombre: nombre,
+            apellido: apellido,
+            dni: dni,
+            fechaDeNacimiento: fechaDeNacimiento,
+            genero: genero,
+            donanteOrganos: donanteOrganos,
+            autos: autos
+        };
+
+        const persona = personaService.agregarPersona(personaAgregar);
 
         if (!persona) {
             res.status(400).json({ error: 'datos incorrectos' });
