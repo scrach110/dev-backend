@@ -45,10 +45,10 @@ const autoController = (router: Router) => {
         res.status(200).json({ auto: auto });
     });
 
-    router.post('/auto', (req, res) => {
+    router.post('/auto', async (req, res) => {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
 
-        const autoAgregar: Auto ={
+        const autoAgregar: Auto = {
             id: 'null',
             marca: marca,
             modelo: modelo,
@@ -58,21 +58,24 @@ const autoController = (router: Router) => {
             numeroDeChasis: numeroDeChasis,
             motor: motor,
             idPersona: idPersona
-        }
+        };
+        try {
+            const autoCreado = await autoService.crearAuto(autoAgregar);
 
-        const autoCreado = autoService.crearAuto(autoAgregar);
-
-        if (!autoCreado) {
-            res.status(400).json({ error: 'datos incorrectos' });
-            return;
+            if (!autoCreado) {
+                res.status(400).json({ error: 'datos incorrectos' });
+                return;
+            }
+            const agregarAuto = await autoService.agregarAutoPersona(autoCreado, autoCreado.idPersona);
+            if (!agregarAuto) {
+                res.status(400).json({ error: 'la persona no existe' });
+                return;
+            }
+            res.status(201).json(autoCreado);
+        } catch (error) {
+            console.error('Error al crear el auto:', error);
+            res.status(500).json({ error: 'Error interno del servidor' });
         }
-        //
-        const agregarAuto = autoService.agregarAutoPersona(autoCreado, autoCreado.idPersona);
-        if (!agregarAuto) {
-            res.status(400).json({ error: 'la persona no existe' });
-            return;
-        }
-        res.status(201).json(autoCreado);
     });
 
     router.delete('/auto/:id', (req, res) => {

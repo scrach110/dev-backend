@@ -1,14 +1,13 @@
-import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
-import { listaPersonas } from '../repository/listaPersonas';
 import { RepositoryFactory } from '../repository/RepositoryFactory';
 
 const AutoService = () => {
-
     const repository = RepositoryFactory.autoRepository();
 
-    const obtenerTodosLosAutos = () => {
-        const autos = repository.findAll();
+    const obtenerTodosLosAutos = async (): Promise<
+        { id: string; marca: string; modelo: string; año: number; patente: string; idPersona: string }[]
+    > => {
+        const autos = await repository.findAll();
 
         return autos.map((a) => ({
             id: a.id,
@@ -20,8 +19,10 @@ const AutoService = () => {
         }));
     };
 
-    const autosPorId = (id: string) => {
-        const autos = repository.findById(id);
+    const autosPorId = async (
+        id: string
+    ): Promise<{ marca: string; modelo: string; año: number; patente: string }[] | null> => {
+        const autos = await repository.findById(id);
 
         if (!autos) {
             return null;
@@ -32,39 +33,38 @@ const AutoService = () => {
             modelo: a.modelo,
             año: a.año,
             patente: a.patente
-            }));
-
+        }));
     };
 
-    const autoPorIdAuto = (id: string) => {
-        const auto = repository.findByIdAuto(id);
+    const autoPorIdAuto = async (id: string): Promise<Auto | undefined> => {
+        const auto = await repository.findByIdAuto(id);
 
         return auto;
-    }
+    };
 
-    const editarAuto = (id: string, cambios: Partial<Auto>): Auto | null =>{
-        const autoEditado = repository.update(id, cambios);
+    const editarAuto = async (id: string, cambios: Partial<Auto>): Promise<Auto | null> => {
+        const autoEditado = await repository.update(id, cambios);
 
         return autoEditado;
-    }
+    };
 
-    const crearAuto = (auto: Auto) : Auto | null => {
-        const autoCreado = repository.save(auto);
+    const crearAuto = async (auto: Auto): Promise<Auto | null> => {
+        const autoCreado = await repository.save(auto);
 
         return autoCreado;
-    }
+    };
 
-    const agregarAutoPersona = (auto: Auto, idPersona: string) : boolean =>{
-        const resultado = repository.saveAutoInPersona(auto, idPersona);
-
-        return resultado;
-    }
-
-    const eliminarAuto = (idAuto : string): boolean =>{
-        const resultado = repository.delete(idAuto);
+    const agregarAutoPersona = async (auto: Auto, idPersona: string): Promise<boolean> => {
+        const resultado = await repository.saveAutoInPersona(auto, idPersona);
 
         return resultado;
-    }
+    };
+
+    const eliminarAuto = async (idAuto: string): Promise<boolean> => {
+        const resultado = await repository.delete(idAuto);
+
+        return resultado;
+    };
 
     /*
 

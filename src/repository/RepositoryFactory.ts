@@ -1,5 +1,4 @@
 import process from 'process';
-import Auto from '../interfaces/Auto';
 import Persona from '../interfaces/Persona';
 import { IRepository } from './IRepository';
 import { StaticPersonaRepository } from './StaticPersonaRepository';
@@ -39,5 +38,4 @@ export abstract class RepositoryFactory {
 
         return new StaticAutoRepository();
     }
-
 }

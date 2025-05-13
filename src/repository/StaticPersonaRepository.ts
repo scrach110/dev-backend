@@ -5,14 +5,14 @@ import { listaPersonas } from './listaPersonas';
 import { randomUUID } from 'crypto';
 
 export class StaticPersonaRepository implements IRepository<Persona> {
-    findAll(): Persona[] {
-        return listaPersonas;
+    async findAll(): Promise<Persona[]> {
+        return await listaPersonas;
     }
 
-    findById(id: string): Persona | undefined {
+    async findById(id: string): Promise<Persona | undefined> {
         return listaPersonas.find((p) => p.id === id);
     }
-    save(persona: Persona): Persona | null {
+    async save(persona: Persona): Promise<Persona | null> {
         const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = persona;
         const generosDisponibles = ['masculino', 'femenino', 'no-binario'];
 
@@ -45,7 +45,7 @@ export class StaticPersonaRepository implements IRepository<Persona> {
         return personaCrear;
     }
 
-    update(id: string, cambios: Partial<Persona>): Persona | null {
+    async update(id: string, cambios: Partial<Persona>): Promise<Persona | null> {
         const persona = listaPersonas.find((p) => p.id === id);
         if (!persona) return null;
 
@@ -74,7 +74,7 @@ export class StaticPersonaRepository implements IRepository<Persona> {
         return persona;
     }
 
-    delete(id: string): boolean {
+    async delete(id: string): Promise<boolean> {
         const indexPersona = listaPersonas.findIndex((p) => p.id === id);
         if (indexPersona === -1) {
             return false;

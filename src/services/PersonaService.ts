@@ -10,8 +10,8 @@ import { RepositoryFactory } from '../repository/RepositoryFactory';
 const PersonaService = () => {
     const repository = RepositoryFactory.personaRepository();
 
-    const obtenerPersonas = (): { id: string; nombre: string; apellido: string; DNI: string }[] => {
-        const personas = repository.findAll();
+    const obtenerPersonas = async (): Promise<{ id: string; nombre: string; apellido: string; DNI: string }[]> => {
+        const personas = await repository.findAll();
         return personas.map((p) => ({
             id: p.id,
             nombre: p.nombre,
@@ -20,25 +20,25 @@ const PersonaService = () => {
         }));
     };
 
-    const entidadCompleta = (id: string): Persona | Persona[] | undefined => {
-        const persona = repository.findById(id);
+    const entidadCompleta = async (id: string): Promise<Persona | Persona[] | undefined> => {
+        const persona = await repository.findById(id);
         return persona;
     };
 
-    const actualizarPersona = (id: string, cambios: Partial<Persona>): Persona | null => {
-        const personaActualizada = repository.update(id, cambios);
+    const actualizarPersona = async (id: string, cambios: Partial<Persona>): Promise<Persona | null> => {
+        const personaActualizada = await repository.update(id, cambios);
 
         return personaActualizada;
     };
 
-    const agregarPersona = (persona: Persona): Persona | null => {
-        const personaCreada = repository.save(persona);
+    const agregarPersona = async (persona: Persona): Promise<Persona | null> => {
+        const personaCreada = await repository.save(persona);
 
         return personaCreada;
     };
 
-    const eliminarPersona = (id: string): boolean => {
-        return repository.delete(id);
+    const eliminarPersona = async (id: string): Promise<boolean> => {
+        return await repository.delete(id);
     };
 
     return {

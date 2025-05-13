@@ -1,14 +1,13 @@
 import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
-import { IRepository } from './IRepository';
 import { listaPersonas } from './listaPersonas';
 import { IAutoRepository } from './IAutoRepository';
 
 export class StaticAutoRepository implements IAutoRepository {
-    findAll(): Auto[] {
+    async findAll(): Promise<Auto[]> {
         return listaPersonas.flatMap((p) => p.autos);
     }
-    findById(id: string): Auto[] | undefined {
+    async findById(id: string): Promise<Auto[] | undefined> {
         try {
             const persona = listaPersonas.find((p) => p.id === id);
             const autos = persona?.autos;
@@ -18,13 +17,13 @@ export class StaticAutoRepository implements IAutoRepository {
         }
     }
 
-    findByIdAuto(id: string): Auto | undefined {
+    async findByIdAuto(id: string): Promise<Auto | undefined> {
         const personaAuto = listaPersonas.find((persona) => persona.autos.some((auto) => auto.id === id));
         const auto = personaAuto?.autos.find((auto) => auto.id === id);
         return auto;
     }
 
-    save(auto: Auto): Auto | null {
+    async save(auto: Auto): Promise<Auto | null> {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = auto;
 
         if (
@@ -53,7 +52,7 @@ export class StaticAutoRepository implements IAutoRepository {
         return autoCrear;
     }
 
-    saveAutoInPersona(auto: Auto, idPersona: string): boolean {
+    async saveAutoInPersona(auto: Auto, idPersona: string): Promise<boolean> {
         const persona = listaPersonas.find((p) => p.id === idPersona);
         if (!persona) {
             return false;
@@ -63,7 +62,7 @@ export class StaticAutoRepository implements IAutoRepository {
         return true;
     }
 
-    update(id: string, cambios: Partial<Auto>): Auto | null {
+    async update(id: string, cambios: Partial<Auto>): Promise<Auto | null> {
         const persona = listaPersonas.find((p) => p.autos.find((a) => a.id === id));
         if (!persona) {
             return null;
@@ -85,7 +84,7 @@ export class StaticAutoRepository implements IAutoRepository {
         return auto;
     }
 
-    delete(id: string): boolean {
+    async delete(id: string): Promise<boolean> {
         const persona = listaPersonas.find((p) => p.autos.find((a) => a.id === id));
         if (!persona) {
             return false;
@@ -95,4 +94,3 @@ export class StaticAutoRepository implements IAutoRepository {
         return true;
     }
 }
-
