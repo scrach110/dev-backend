@@ -39,17 +39,7 @@ const PersonaController = (router: Router) => {
 
     router.post('/persona', async (req, res) => {
         const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = req.body;
-        /*
-        const persona = personaService.agregarPersona(
-            nombre,
-            apellido,
-            dni,
-            fechaDeNacimiento,
-            genero,
-            donanteOrganos,
-            autos
-        );
-*/
+
         const personaAgregar: Persona = {
             id: 'null',
             nombre: nombre,
