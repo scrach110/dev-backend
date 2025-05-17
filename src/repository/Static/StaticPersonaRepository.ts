@@ -1,6 +1,6 @@
-import Persona from '../interfaces/Persona';
-import Genero from '../interfaces/Genero';
-import { IRepository } from './IRepository';
+import Persona from '../../interfaces/Persona';
+import Genero from '../../interfaces/Genero';
+import { IRepository } from '../IRepository';
 import { listaPersonas } from './listaPersonas';
 import { randomUUID } from 'crypto';
 

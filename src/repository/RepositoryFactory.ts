@@ -1,9 +1,10 @@
 import process from 'process';
 import Persona from '../interfaces/Persona';
 import { IRepository } from './IRepository';
-import { StaticPersonaRepository } from './StaticPersonaRepository';
+import { StaticPersonaRepository } from './Static/StaticPersonaRepository';
 import { IAutoRepository } from './IAutoRepository';
-import { StaticAutoRepository } from './StaticAutoRepository';
+import { StaticAutoRepository } from './Static/StaticAutoRepository';
+import { MongoPersonaRepository } from './Mongo/MongoPersonaRepository';
 
 export abstract class RepositoryFactory {
     private static personaRepositorySingleton: IRepository<Persona> | undefined;
@@ -26,6 +27,8 @@ export abstract class RepositoryFactory {
     private static getPersonaRepository(): IRepository<Persona> {
         if (process.env.REPOSITORY === 'static') {
             return new StaticPersonaRepository();
+        } else if (process.env.REPOSITORY === 'mongodb') {
+            return new MongoPersonaRepository();
         }
 
         return new StaticPersonaRepository();

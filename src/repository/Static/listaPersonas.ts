@@ -1,5 +1,5 @@
-import Auto from '../interfaces/Auto';
-import Persona from '../interfaces/Persona';
+import Auto from '../../interfaces/Auto';
+import Persona from '../../interfaces/Persona';
 
 const BMW: Auto = {
     id: '1',

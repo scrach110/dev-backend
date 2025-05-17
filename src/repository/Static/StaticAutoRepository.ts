@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto';
-import Auto from '../interfaces/Auto';
+import Auto from '../../interfaces/Auto';
 import { listaPersonas } from './listaPersonas';
-import { IAutoRepository } from './IAutoRepository';
+import { IAutoRepository } from '../IAutoRepository';
 
 export class StaticAutoRepository implements IAutoRepository {
     async findAll(): Promise<Auto[]> {
