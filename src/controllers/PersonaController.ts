@@ -41,7 +41,7 @@ const PersonaController = (router: Router) => {
         const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = req.body;
 
         const personaAgregar: Persona = {
-            id: 'null',
+            _id: 'null',
             nombre: nombre,
             apellido: apellido,
             dni: dni,

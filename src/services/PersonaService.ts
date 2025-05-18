@@ -7,7 +7,7 @@ const PersonaService = () => {
     const obtenerPersonas = async (): Promise<{ id: string; nombre: string; apellido: string; DNI: string }[]> => {
         const personas = await repository.findAll();
         return personas.map((p) => ({
-            id: p.id,
+            id: p._id,
             nombre: p.nombre,
             apellido: p.apellido,
             DNI: p.dni

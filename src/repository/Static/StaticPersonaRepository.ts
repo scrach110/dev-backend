@@ -10,7 +10,7 @@ export class StaticPersonaRepository implements IRepository<Persona> {
     }
 
     async findById(id: string): Promise<Persona | undefined> {
-        return listaPersonas.find((p) => p.id === id);
+        return listaPersonas.find((p) => p._id === id);
     }
     async save(persona: Persona): Promise<Persona | null> {
         const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = persona;
@@ -31,7 +31,7 @@ export class StaticPersonaRepository implements IRepository<Persona> {
         }
 
         const personaCrear: Persona = {
-            id: randomUUID(),
+            _id: randomUUID(),
             nombre,
             apellido,
             dni,
@@ -46,7 +46,7 @@ export class StaticPersonaRepository implements IRepository<Persona> {
     }
 
     async update(id: string, cambios: Partial<Persona>): Promise<Persona | null> {
-        const persona = listaPersonas.find((p) => p.id === id);
+        const persona = listaPersonas.find((p) => p._id === id);
         if (!persona) return null;
 
         if (
@@ -75,7 +75,7 @@ export class StaticPersonaRepository implements IRepository<Persona> {
     }
 
     async delete(id: string): Promise<boolean> {
-        const indexPersona = listaPersonas.findIndex((p) => p.id === id);
+        const indexPersona = listaPersonas.findIndex((p) => p._id === id);
         if (indexPersona === -1) {
             return false;
         }

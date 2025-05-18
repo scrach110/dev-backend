@@ -5,6 +5,7 @@ import { StaticPersonaRepository } from './Static/StaticPersonaRepository';
 import { IAutoRepository } from './IAutoRepository';
 import { StaticAutoRepository } from './Static/StaticAutoRepository';
 import { MongoPersonaRepository } from './Mongo/MongoPersonaRepository';
+import { MongoAutoRepository } from './Mongo/MongoAutoRepository';
 
 export abstract class RepositoryFactory {
     private static personaRepositorySingleton: IRepository<Persona> | undefined;
@@ -37,6 +38,8 @@ export abstract class RepositoryFactory {
     private static getAutoRepository(): IAutoRepository {
         if (process.env.REPOSITORY === 'static') {
             return new StaticAutoRepository();
+        } else if (process.env.REPOSITORY === 'mongodb') {
+            return new MongoAutoRepository();
         }
 
         return new StaticAutoRepository();

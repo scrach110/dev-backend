@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
 import { RepositoryFactory } from '../repository/RepositoryFactory';
 
@@ -10,7 +11,7 @@ const AutoService = () => {
         const autos = await repository.findAll();
 
         return autos.map((a) => ({
-            id: a.id,
+            id: a._id,
             marca: a.marca,
             modelo: a.modelo,
             año: a.año,
@@ -49,13 +50,36 @@ const AutoService = () => {
     };
 
     const crearAuto = async (auto: Auto): Promise<Auto | null> => {
-        const autoCreado = await repository.save(auto);
+        const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = auto;
 
-        return autoCreado;
+        if (
+            typeof marca !== 'string' ||
+            typeof modelo !== 'string' ||
+            typeof año !== 'number' ||
+            typeof patente !== 'string' ||
+            typeof color !== 'string' ||
+            typeof numeroDeChasis !== 'string' ||
+            typeof motor !== 'string' ||
+            typeof idPersona !== 'string'
+        ) {
+            return null;
+        }
+        const autoCrear: Auto = {
+            _id: randomUUID(),
+            marca: marca,
+            modelo: modelo,
+            año: año,
+            patente: patente,
+            color: color,
+            numeroDeChasis: numeroDeChasis,
+            motor: motor,
+            idPersona: idPersona
+        };
+        return autoCrear;
     };
 
-    const agregarAutoPersona = async (auto: Auto, idPersona: string): Promise<boolean> => {
-        const resultado = await repository.saveAutoInPersona(auto, idPersona);
+    const agregarAutoPersona = async (auto: Auto): Promise<Auto | null> => {
+        const resultado = await repository.save(auto);
 
         return resultado;
     };
