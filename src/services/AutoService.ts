@@ -6,12 +6,12 @@ const AutoService = () => {
     const repository = RepositoryFactory.autoRepository();
 
     const obtenerTodosLosAutos = async (): Promise<
-        { id: string; marca: string; modelo: string; año: number; patente: string; idPersona: string }[]
+        { _id: string; marca: string; modelo: string; año: number; patente: string; idPersona: string }[]
     > => {
         const autos = await repository.findAll();
 
         return autos.map((a) => ({
-            id: a._id,
+            _id: a._id,
             marca: a.marca,
             modelo: a.modelo,
             año: a.año,
@@ -39,6 +39,7 @@ const AutoService = () => {
 
     const autoPorIdAuto = async (id: string): Promise<Auto | undefined> => {
         const auto = await repository.findByIdAuto(id);
+        console.log(auto);
 
         return auto;
     };

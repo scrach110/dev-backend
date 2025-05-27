@@ -41,7 +41,7 @@ export class MongoPersonaRepository implements IRepository<Persona> {
                 fechaDeNacimiento: fechaNacimientoPersona,
                 genero: genero as Genero,
                 donanteOrganos,
-                autos
+                autos: []
             };
 
             const collection = await MongoConection();
