@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import process from 'process';
 import personaRoutes from './routes/personaRoutes';
 import autoRoutes from './routes/autoRoutes';
+import errorHandler from './middlewares/errorHandler';
 
 // Creamos nuestra app express
 const app = express();
@@ -39,6 +40,8 @@ app.post('/login', (req, res) => {
 
 app.use('/', personaRoutes);
 app.use('/', autoRoutes);
+
+app.use(errorHandler);
 
 // Levantamos el servidor en el puerto que configuramos
 app.listen(port, () => {

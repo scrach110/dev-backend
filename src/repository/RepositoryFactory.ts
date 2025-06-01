@@ -6,6 +6,8 @@ import { IAutoRepository } from './IAutoRepository';
 import { StaticAutoRepository } from './Static/StaticAutoRepository';
 import { MongoPersonaRepository } from './Mongo/MongoPersonaRepository';
 import { MongoAutoRepository } from './Mongo/MongoAutoRepository';
+import { FireBasePersonaRepository } from './FireBase/FireBasePersonaRepository';
+import { FireBaseAutoRepository } from './FireBase/FireBaseAutoRepository';
 
 export abstract class RepositoryFactory {
     private static personaRepositorySingleton: IRepository<Persona> | undefined;
@@ -30,6 +32,8 @@ export abstract class RepositoryFactory {
             return new StaticPersonaRepository();
         } else if (process.env.REPOSITORY === 'mongodb') {
             return new MongoPersonaRepository();
+        } else if (process.env.REPOSITORY === 'firebase') {
+            return new FireBasePersonaRepository();
         }
 
         return new StaticPersonaRepository();
@@ -40,6 +44,8 @@ export abstract class RepositoryFactory {
             return new StaticAutoRepository();
         } else if (process.env.REPOSITORY === 'mongodb') {
             return new MongoAutoRepository();
+        } else if (process.env.REPOSITORY === 'firebase') {
+            return new FireBaseAutoRepository();
         }
 
         return new StaticAutoRepository();

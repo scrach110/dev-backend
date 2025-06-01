@@ -7,7 +7,11 @@ const conection = false;
 
 export const MongoConection = async () => {
     if (!conection) {
-        await client.connect();
+        try {
+            await client.connect();
+        } catch {
+            throw new Error('error con la base de mongodb');
+        }
     }
     return client.db(dbName);
 };
