@@ -1,51 +1,80 @@
-import { collection, doc, getDocs, getDoc, updateDoc, deleteDoc, query, where, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
+import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore';
 import Auto from '../../interfaces/Auto';
+import Persona from '../../interfaces/Persona';
 import { IAutoRepository } from '../IAutoRepository';
 
 export class FireBaseAutoRepository implements IAutoRepository {
-    private autosCollection = collection(db, 'autos');
+    private personaCollection = collection(db, 'personas');
 
     async findAll(): Promise<Auto[]> {
-        const snapshot = await getDocs(this.autosCollection);
-        return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() }) as Auto);
+        const snapshot = await getDocs(this.personaCollection);
+        const autos: Auto[] = [];
+        snapshot.forEach((docSnap) => {
+            const persona = docSnap.data() as Persona;
+            if (persona.autos) {
+                autos.push(...persona.autos);
+            }
+        });
+        return autos;
     }
 
     async findById(idPersona: string): Promise<Auto[] | undefined> {
-        const q = query(this.autosCollection, where('idPersona', '==', idPersona));
-        const snapshot = await getDocs(q);
-        if (snapshot.empty) {
-            return undefined;
-        }
-        return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() }) as Auto);
+        const personaRef = doc(this.personaCollection, idPersona);
+        const snapshot = await getDoc(personaRef);
+        const persona = snapshot.data() as Persona | undefined;
+        return persona?.autos ?? undefined;
     }
 
     async findByIdAuto(idAuto: string): Promise<Auto | undefined> {
-        const ref = doc(db, 'autos', idAuto);
-        const snap = await getDoc(ref);
-        if (!snap.exists()) {
-            return undefined;
+        const snapshot = await getDocs(this.personaCollection);
+        for (const docSnap of snapshot.docs) {
+            const persona = docSnap.data() as Persona;
+            const auto = persona.autos?.find((a) => a._id === idAuto);
+            if (auto) return auto;
         }
-        return { _id: snap.id, ...snap.data() } as Auto;
+        return undefined;
     }
 
     async save(auto: Auto): Promise<Auto | null> {
-        const docRef = doc(this.autosCollection, auto._id);
-        await setDoc(docRef, auto);
+        const personaRef = doc(this.personaCollection, auto.idPersona);
+        const snapshot = await getDoc(personaRef);
+        if (!snapshot.exists()) return null;
 
+        const persona = snapshot.data() as Persona;
+        const autos = persona.autos ?? [];
+        autos.push(auto);
+
+        await updateDoc(personaRef, { autos });
         return auto;
     }
 
     async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto | null> {
-        const ref = doc(db, 'autos', idAuto);
-        await updateDoc(ref, cambios);
-        const updated = await getDoc(ref);
-        return { _id: updated.id, ...updated.data() } as Auto;
+        const snapshot = await getDocs(this.personaCollection);
+        for (const docSnap of snapshot.docs) {
+            const persona = docSnap.data() as Persona;
+            const autos = persona.autos ?? [];
+            const index = autos.findIndex((a) => a._id === idAuto);
+            if (index >= 0) {
+                autos[index] = { ...autos[index], ...cambios };
+                await updateDoc(doc(this.personaCollection, persona._id), { autos });
+                return autos[index];
+            }
+        }
+        return null;
     }
 
     async delete(idAuto: string): Promise<boolean> {
-        const ref = doc(db, 'autos', idAuto);
-        await deleteDoc(ref);
-        return true;
+        const snapshot = await getDocs(this.personaCollection);
+        for (const docSnap of snapshot.docs) {
+            const persona = docSnap.data() as Persona;
+            const autos = persona.autos ?? [];
+            const nuevosAutos = autos.filter((a) => a._id !== idAuto);
+            if (nuevosAutos.length < autos.length) {
+                await updateDoc(doc(this.personaCollection, persona._id), { autos: nuevosAutos });
+                return true;
+            }
+        }
+        return false;
     }
 }
