@@ -1,8 +1,8 @@
-import Auto from '../interfaces/Auto';
-import Persona from '../interfaces/Persona';
+import Auto from '../../interfaces/Auto';
+import Persona from '../../interfaces/Persona';
 
 const BMW: Auto = {
-    id: '1',
+    _id: '1',
     año: 2013,
     color: 'Negro',
     marca: 'BMW',
@@ -14,7 +14,7 @@ const BMW: Auto = {
 };
 
 const PORCHE: Auto = {
-    id: '2',
+    _id: '2',
     año: 2010,
     color: 'Blanco',
     marca: 'Porche',
@@ -26,7 +26,7 @@ const PORCHE: Auto = {
 };
 
 const FIESTA: Auto = {
-    id: '3',
+    _id: '3',
     año: 2004,
     color: 'Gris',
     marca: 'Ford',
@@ -38,7 +38,7 @@ const FIESTA: Auto = {
 };
 
 const FARAON: Auto = {
-    id: '4',
+    _id: '4',
     año: 2005,
     color: 'Azul',
     marca: 'Renault',
@@ -52,7 +52,7 @@ const FARAON: Auto = {
 // eslint-disable-next-line prefer-const
 let listaPersonas: Persona[] = [
     {
-        id: '1',
+        _id: '1',
         nombre: 'Cleopatra',
         apellido: 'Fiorito',
         dni: '-3123412412',
@@ -62,7 +62,7 @@ let listaPersonas: Persona[] = [
         autos: [PORCHE, FARAON]
     },
     {
-        id: '2',
+        _id: '2',
         nombre: 'Fausto',
         apellido: 'Lugano',
         dni: '523523521',
@@ -72,7 +72,7 @@ let listaPersonas: Persona[] = [
         autos: [FIESTA]
     },
     {
-        id: '3',
+        _id: '3',
         nombre: 'Ricardo',
         apellido: 'Faustino',
         dni: '12342134',

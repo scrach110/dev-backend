@@ -2,7 +2,7 @@ import Auto from './Auto';
 import Genero from './Genero';
 
 interface Persona {
-    id: string;
+    _id: string;
     nombre: string;
     apellido: string;
     dni: string;

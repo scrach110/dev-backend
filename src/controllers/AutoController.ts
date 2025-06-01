@@ -49,7 +49,7 @@ const autoController = (router: Router) => {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
 
         const autoAgregar: Auto = {
-            id: 'null',
+            _id: 'null',
             marca: marca,
             modelo: modelo,
             año: año,
@@ -66,7 +66,7 @@ const autoController = (router: Router) => {
                 res.status(400).json({ error: 'datos incorrectos' });
                 return;
             }
-            const agregarAuto = await autoService.agregarAutoPersona(autoCreado, autoCreado.idPersona);
+            const agregarAuto = await autoService.agregarAutoPersona(autoCreado);
             if (!agregarAuto) {
                 res.status(400).json({ error: 'la persona no existe' });
                 return;
@@ -85,6 +85,7 @@ const autoController = (router: Router) => {
 
         if (!eliminado) {
             res.status(404).json({ error: 'no se encontro el auto' });
+            return;
         }
 
         res.status(200).json('Auto eliminado');

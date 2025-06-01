@@ -11,37 +11,31 @@ const PersonaController = (router: Router) => {
         res.json(personas);
     });
 
-    router.get('/persona/:id', async (req, res) => {
-        const idPersona = String(req.params.id);
-
-        const persona = await personaService.entidadCompleta(idPersona);
-
-        if (!persona) {
-            res.status(404).json();
-            return;
+    router.get('/persona/:id', async (req, res, next) => {
+        try {
+            const idPersona = String(req.params.id);
+            const persona = await personaService.entidadCompleta(idPersona);
+            res.json(persona);
+        } catch (error) {
+            next(error);
         }
-
-        res.json(persona);
     });
 
-    router.put('/persona/:id', async (req, res) => {
-        const idPersona = String(req.params.id);
-
-        const persona = await personaService.actualizarPersona(idPersona, req.body);
-
-        if (!persona) {
-            res.status(400).json({ error: 'datos incorrectos' });
-            return;
+    router.put('/persona/:id', async (req, res, next) => {
+        try {
+            const idPersona = String(req.params.id);
+            const persona = await personaService.actualizarPersona(idPersona, req.body);
+            res.status(201).json(persona);
+        } catch (error) {
+            next(error);
         }
-
-        res.status(201).json(persona);
     });
 
-    router.post('/persona', async (req, res) => {
+    router.post('/persona', async (req, res, next) => {
         const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = req.body;
 
         const personaAgregar: Persona = {
-            id: 'null',
+            _id: 'null',
             nombre: nombre,
             apellido: apellido,
             dni: dni,
@@ -50,27 +44,22 @@ const PersonaController = (router: Router) => {
             donanteOrganos: donanteOrganos,
             autos: autos
         };
-
-        const persona = await personaService.agregarPersona(personaAgregar);
-
-        if (!persona) {
-            res.status(400).json({ error: 'datos incorrectos' });
-            return;
+        try {
+            const persona = await personaService.agregarPersona(personaAgregar);
+            res.status(201).json({ persona: persona });
+        } catch (error) {
+            next(error);
         }
-
-        res.status(201).json({ persona: persona });
     });
 
-    router.delete('/persona/:id', async (req, res) => {
-        const idPersona = String(req.params.id);
-        const eliminada = await personaService.eliminarPersona(idPersona);
-
-        if (!eliminada) {
-            res.status(404).json({ error: 'la persona no existe' });
-            return;
+    router.delete('/persona/:id', async (req, res, next) => {
+        try {
+            const idPersona = String(req.params.id);
+            await personaService.eliminarPersona(idPersona);
+            res.status(200).json('se logró eliminar a la persona');
+        } catch (error) {
+            next(error);
         }
-
-        res.status(200).json('se logró eliminar a la persona');
     });
 };
 export default PersonaController;
