@@ -3,6 +3,7 @@ import { db } from '../../firebase/firebase';
 import { IRepository } from '../IRepository';
 import Persona from '../../interfaces/Persona';
 import { randomUUID } from 'crypto';
+import AppError from '../../middlewares/AppError';
 
 export class FireBasePersonaRepository implements IRepository<Persona> {
     private personasCollection = collection(db, 'personas');
@@ -12,14 +13,16 @@ export class FireBasePersonaRepository implements IRepository<Persona> {
         return snapshot.docs.map((doc) => ({ _id: doc.id, ...doc.data() }) as Persona);
     }
 
-    async findById(id: string): Promise<Persona | undefined> {
+    async findById(id: string): Promise<Persona> {
         const ref = doc(this.personasCollection, id);
         const snap = await getDoc(ref);
-        if (!snap.exists()) return undefined;
+        if (!snap.exists()) {
+            throw new AppError('La persona no existe', 404);
+        }
         return { _id: snap.id, ...snap.data() } as Persona;
     }
 
-    async save(persona: Persona): Promise<Persona | null> {
+    async save(persona: Persona): Promise<Persona> {
         const _id = randomUUID();
         const personaData = { ...persona, _id, autos: persona.autos ?? [] };
         const docRef = doc(this.personasCollection, _id);

@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import Auto from '../interfaces/Auto';
 import { RepositoryFactory } from '../repository/RepositoryFactory';
+import AppError from '../middlewares/AppError';
 
 const AutoService = () => {
     const repository = RepositoryFactory.autoRepository();
@@ -23,10 +24,10 @@ const AutoService = () => {
     const autosPorId = async (
         id: string
     ): Promise<{ marca: string; modelo: string; año: number; patente: string }[] | null> => {
-        const autos = await repository.findById(id);
+        const autos = await repository.findByIdPersona(id);
 
         if (!autos) {
-            return null;
+            throw new AppError('La persona no existe', 404);
         }
 
         return autos.map((a) => ({
@@ -45,12 +46,23 @@ const AutoService = () => {
     };
 
     const editarAuto = async (id: string, cambios: Partial<Auto>): Promise<Auto | null> => {
+        if (
+            (cambios.año && typeof cambios.año !== 'number') ||
+            (cambios.color && typeof cambios.color !== 'string') ||
+            (cambios.marca && typeof cambios.marca !== 'string') ||
+            (cambios.modelo && typeof cambios.modelo !== 'string') ||
+            (cambios.motor && typeof cambios.motor !== 'string') ||
+            (cambios.numeroDeChasis && typeof cambios.numeroDeChasis !== 'string') ||
+            (cambios.patente && typeof cambios.patente !== 'string')
+        ) {
+            throw new AppError('Datos incorrectos', 400);
+        }
         const autoEditado = await repository.update(id, cambios);
 
         return autoEditado;
     };
 
-    const crearAuto = async (auto: Auto): Promise<Auto | null> => {
+    const crearAuto = async (auto: Auto): Promise<Auto> => {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = auto;
 
         if (
@@ -63,7 +75,7 @@ const AutoService = () => {
             typeof motor !== 'string' ||
             typeof idPersona !== 'string'
         ) {
-            return null;
+            throw new AppError('Datos incorrectos', 400);
         }
         const autoCrear: Auto = {
             _id: randomUUID(),
@@ -79,7 +91,7 @@ const AutoService = () => {
         return autoCrear;
     };
 
-    const agregarAutoPersona = async (auto: Auto): Promise<Auto | null> => {
+    const agregarAutoPersona = async (auto: Auto): Promise<Auto> => {
         const resultado = await repository.save(auto);
 
         return resultado;

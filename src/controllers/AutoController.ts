@@ -9,43 +9,37 @@ const autoController = (router: Router) => {
         res.json(autos);
     });
 
-    router.get('/autos/:id', async (req, res) => {
-        const idPersona = String(req.params.id);
-        const autos = await autoService.autosPorId(idPersona);
-        if (!autos) {
-            res.status(400).json({ error: 'persona no existente' });
-            return;
+    router.get('/autos/:id', async (req, res, next) => {
+        try {
+            const idPersona = String(req.params.id);
+            const autos = await autoService.autosPorId(idPersona);
+            res.json(autos);
+        } catch (error) {
+            next(error);
         }
-        res.json(autos);
     });
 
-    router.get('/auto/:id', async (req, res) => {
-        const idAuto = String(req.params.id);
-
-        const auto = await autoService.autoPorIdAuto(idAuto);
-
-        if (!auto) {
-            res.status(404).json({ error: 'el auto o la persona propietaria no existen' });
-            return;
+    router.get('/auto/:id', async (req, res, next) => {
+        try {
+            const idAuto = String(req.params.id);
+            const auto = await autoService.autoPorIdAuto(idAuto);
+            res.json(auto);
+        } catch (error) {
+            next(error);
         }
-
-        res.json(auto);
     });
 
-    router.put('/auto/:id', async (req, res) => {
-        const idAuto = String(req.params.id);
-
-        const auto = await autoService.editarAuto(idAuto, req.body);
-
-        if (!auto) {
-            res.status(404).json({ error: 'datos mal ingresados' });
-            return;
+    router.put('/auto/:id', async (req, res, next) => {
+        try {
+            const idAuto = String(req.params.id);
+            const auto = await autoService.editarAuto(idAuto, req.body);
+            res.status(200).json({ auto: auto });
+        } catch (error) {
+            next(error);
         }
-
-        res.status(200).json({ auto: auto });
     });
 
-    router.post('/auto', async (req, res) => {
+    router.post('/auto', async (req, res, next) => {
         const { marca, modelo, año, patente, color, numeroDeChasis, motor, idPersona } = req.body;
 
         const autoAgregar: Auto = {
@@ -61,20 +55,11 @@ const autoController = (router: Router) => {
         };
         try {
             const autoCreado = await autoService.crearAuto(autoAgregar);
-
-            if (!autoCreado) {
-                res.status(400).json({ error: 'datos incorrectos' });
-                return;
-            }
-            const agregarAuto = await autoService.agregarAutoPersona(autoCreado);
-            if (!agregarAuto) {
-                res.status(400).json({ error: 'la persona no existe' });
-                return;
-            }
+            await autoService.agregarAutoPersona(autoCreado);
             res.status(201).json(autoCreado);
         } catch (error) {
             console.error('Error al crear el auto:', error);
-            res.status(500).json({ error: 'Error interno del servidor' });
+            next(error);
         }
     });
 
