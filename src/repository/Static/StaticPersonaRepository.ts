@@ -20,7 +20,7 @@ export class StaticPersonaRepository implements IPersonaRepository {
         return persona;
     }
 
-    async update(id: string, cambios: Partial<Persona>): Promise<Persona | null> {
+    async update(id: string, cambios: Partial<Persona>): Promise<Persona> {
         const persona = listaPersonas.find((p) => p._id === id);
         if (!persona) {
             throw new AppError('La persona no existe', 404);

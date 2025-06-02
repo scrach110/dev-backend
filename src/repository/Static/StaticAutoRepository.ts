@@ -37,14 +37,14 @@ export class StaticAutoRepository implements IAutoRepository {
         return auto;
     }
 
-    async update(id: string, cambios: Partial<Auto>): Promise<Auto | null> {
+    async update(id: string, cambios: Partial<Auto>): Promise<Auto> {
         const persona = listaPersonas.find((p) => p.autos.find((a) => a._id === id));
         if (!persona) {
-            return null;
+            throw new AppError('La persona no existe', 404);
         }
         const auto = persona.autos.find((a) => a._id === id);
         if (!auto) {
-            return null;
+            throw new AppError('El auto no existe', 404);
         }
 
         const autoEdit: Partial<Auto> = cambios;

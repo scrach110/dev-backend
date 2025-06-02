@@ -38,14 +38,16 @@ const AutoService = () => {
         }));
     };
 
-    const autoPorIdAuto = async (id: string): Promise<Auto | undefined> => {
+    const autoPorIdAuto = async (id: string): Promise<Auto> => {
         const auto = await repository.findByIdAuto(id);
-        console.log(auto);
+        if (!auto) {
+            throw new AppError('El auto no existe', 404);
+        }
 
         return auto;
     };
 
-    const editarAuto = async (id: string, cambios: Partial<Auto>): Promise<Auto | null> => {
+    const editarAuto = async (id: string, cambios: Partial<Auto>): Promise<Auto> => {
         if (
             (cambios.año && typeof cambios.año !== 'number') ||
             (cambios.color && typeof cambios.color !== 'string') ||

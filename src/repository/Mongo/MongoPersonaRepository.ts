@@ -19,7 +19,7 @@ export class MongoPersonaRepository implements IRepository<Persona> {
         return persona;
     }
 
-    async update(id: string, cambios: Partial<Persona>): Promise<Persona | null> {
+    async update(id: string, cambios: Partial<Persona>): Promise<Persona> {
         const collection = await MongoConection();
         await collection.collection<Persona>('personas').updateOne({ _id: id }, { $set: cambios });
         //temporal

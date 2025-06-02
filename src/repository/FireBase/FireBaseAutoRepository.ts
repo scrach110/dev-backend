@@ -31,7 +31,7 @@ export class FireBaseAutoRepository implements IAutoRepository {
         return persona?.autos as Auto[];
     }
 
-    async findByIdAuto(idAuto: string): Promise<Auto | undefined> {
+    async findByIdAuto(idAuto: string): Promise<Auto> {
         const snapshot = await getDocs(this.personaCollection);
         for (const docSnap of snapshot.docs) {
             const persona = docSnap.data() as Persona;
@@ -58,7 +58,7 @@ export class FireBaseAutoRepository implements IAutoRepository {
         return auto;
     }
 
-    async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto | null> {
+    async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto> {
         const snapshot = await getDocs(this.personaCollection);
         for (const docSnap of snapshot.docs) {
             const persona = docSnap.data() as Persona;
@@ -70,7 +70,7 @@ export class FireBaseAutoRepository implements IAutoRepository {
                 return autos[index];
             }
         }
-        return null;
+        throw new AppError('El auto no existe', 404);
     }
 
     async delete(idAuto: string): Promise<boolean> {

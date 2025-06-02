@@ -50,7 +50,7 @@ const PersonaService = () => {
                 genero: cambios.genero ?? persona.genero,
                 fechaDeNacimiento: cambios.fechaDeNacimiento
                     ? new Date(cambios.fechaDeNacimiento)
-                    : new Date(persona.fechaDeNacimiento),
+                    : persona.fechaDeNacimiento,
                 donanteOrganos: cambios.donanteOrganos ?? persona.donanteOrganos,
                 autos: cambios.autos ?? persona.autos
             };

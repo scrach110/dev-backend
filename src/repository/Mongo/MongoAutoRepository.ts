@@ -15,11 +15,10 @@ export class MongoAutoRepository implements IAutoRepository {
         return persona?.autos as Auto[];
     }
 
-    async findByIdAuto(idAuto: string): Promise<Auto | undefined> {
+    async findByIdAuto(idAuto: string): Promise<Auto> {
         const db = await MongoConection();
         const persona = await db.collection<Persona>('personas').findOne({ 'autos._id': idAuto });
-
-        return persona?.autos.find((a) => a._id === idAuto);
+        return persona?.autos.find((a) => a._id === idAuto) as Auto;
     }
 
     async findAll(): Promise<Auto[]> {
@@ -41,7 +40,7 @@ export class MongoAutoRepository implements IAutoRepository {
         return auto;
     }
 
-    async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto | null> {
+    async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto> {
         const db = await MongoConection();
         const persona = await db.collection<Persona>('personas').findOne({ 'autos._id': idAuto });
 
@@ -70,8 +69,11 @@ export class MongoAutoRepository implements IAutoRepository {
         const result = await db
             .collection<Persona>('personas')
             .updateOne({ _id: persona._id }, { $set: { [updateKey]: autoEditado } });
-
-        return result.modifiedCount === 1 ? autoEditado : null;
+        if (result.modifiedCount === 1) {
+            return autoEditado;
+        } else {
+            throw new AppError('fallo a la hora de editar el auto', 500);
+        }
     }
 
     async delete(idAuto: string): Promise<boolean> {
