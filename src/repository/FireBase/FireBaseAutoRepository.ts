@@ -3,8 +3,13 @@ import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore'
 import Auto from '../../interfaces/Auto';
 import Persona from '../../interfaces/Persona';
 import { IAutoRepository } from '../IAutoRepository';
+import AppError from '../../middlewares/AppError';
 
 export class FireBaseAutoRepository implements IAutoRepository {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    findById(id: string): Promise<Auto> {
+        throw new Error('Method not implemented.');
+    }
     private personaCollection = collection(db, 'personas');
 
     async findAll(): Promise<Auto[]> {
@@ -19,27 +24,31 @@ export class FireBaseAutoRepository implements IAutoRepository {
         return autos;
     }
 
-    async findById(idPersona: string): Promise<Auto[] | undefined> {
+    async findByIdPersona(idPersona: string): Promise<Auto[]> {
         const personaRef = doc(this.personaCollection, idPersona);
         const snapshot = await getDoc(personaRef);
         const persona = snapshot.data() as Persona | undefined;
-        return persona?.autos ?? undefined;
+        return persona?.autos as Auto[];
     }
 
-    async findByIdAuto(idAuto: string): Promise<Auto | undefined> {
+    async findByIdAuto(idAuto: string): Promise<Auto> {
         const snapshot = await getDocs(this.personaCollection);
         for (const docSnap of snapshot.docs) {
             const persona = docSnap.data() as Persona;
             const auto = persona.autos?.find((a) => a._id === idAuto);
-            if (auto) return auto;
+            if (auto) {
+                return auto;
+            }
         }
-        return undefined;
+        throw new AppError('El auto no existe', 404);
     }
 
-    async save(auto: Auto): Promise<Auto | null> {
+    async save(auto: Auto): Promise<Auto> {
         const personaRef = doc(this.personaCollection, auto.idPersona);
         const snapshot = await getDoc(personaRef);
-        if (!snapshot.exists()) return null;
+        if (!snapshot.exists()) {
+            throw new AppError('Datos no encontrados', 404);
+        }
 
         const persona = snapshot.data() as Persona;
         const autos = persona.autos ?? [];
@@ -49,7 +58,7 @@ export class FireBaseAutoRepository implements IAutoRepository {
         return auto;
     }
 
-    async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto | null> {
+    async update(idAuto: string, cambios: Partial<Auto>): Promise<Auto> {
         const snapshot = await getDocs(this.personaCollection);
         for (const docSnap of snapshot.docs) {
             const persona = docSnap.data() as Persona;
@@ -61,7 +70,7 @@ export class FireBaseAutoRepository implements IAutoRepository {
                 return autos[index];
             }
         }
-        return null;
+        throw new AppError('El auto no existe', 404);
     }
 
     async delete(idAuto: string): Promise<boolean> {

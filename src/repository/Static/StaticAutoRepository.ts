@@ -1,45 +1,50 @@
 import Auto from '../../interfaces/Auto';
 import { listaPersonas } from './listaPersonas';
 import { IAutoRepository } from '../IAutoRepository';
+import AppError from '../../middlewares/AppError';
 
 export class StaticAutoRepository implements IAutoRepository {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    findById(id: string): Promise<Auto> {
+        throw new Error('Method not implemented.');
+    }
     async findAll(): Promise<Auto[]> {
         return listaPersonas.flatMap((p) => p.autos);
     }
-    async findById(id: string): Promise<Auto[] | undefined> {
-        try {
-            const persona = listaPersonas.find((p) => p._id === id);
-            const autos = persona?.autos;
-            return autos;
-        } catch {
-            return undefined;
+    async findByIdPersona(id: string): Promise<Auto[]> {
+        const persona = listaPersonas.find((p) => p._id === id);
+
+        if (!persona) {
+            throw new AppError('La persona no existe', 404);
         }
+
+        return persona.autos;
     }
 
-    async findByIdAuto(id: string): Promise<Auto | undefined> {
+    async findByIdAuto(id: string): Promise<Auto> {
         const personaAuto = listaPersonas.find((persona) => persona.autos.some((auto) => auto._id === id));
         const auto = personaAuto?.autos.find((auto) => auto._id === id);
-        return auto;
+        return auto as Auto;
     }
 
-    async save(auto: Auto): Promise<Auto | null> {
+    async save(auto: Auto): Promise<Auto> {
         const persona = listaPersonas.find((p) => p._id === auto.idPersona);
         if (!persona) {
-            return null;
+            throw new AppError('La persona no existe', 404);
         }
         persona.autos.push(auto);
 
         return auto;
     }
 
-    async update(id: string, cambios: Partial<Auto>): Promise<Auto | null> {
+    async update(id: string, cambios: Partial<Auto>): Promise<Auto> {
         const persona = listaPersonas.find((p) => p.autos.find((a) => a._id === id));
         if (!persona) {
-            return null;
+            throw new AppError('La persona no existe', 404);
         }
         const auto = persona.autos.find((a) => a._id === id);
         if (!auto) {
-            return null;
+            throw new AppError('El auto no existe', 404);
         }
 
         const autoEdit: Partial<Auto> = cambios;

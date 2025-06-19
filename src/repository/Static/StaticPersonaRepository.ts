@@ -1,64 +1,29 @@
 import Persona from '../../interfaces/Persona';
-import Genero from '../../interfaces/Genero';
-import { IRepository } from '../IRepository';
 import { listaPersonas } from './listaPersonas';
-import { randomUUID } from 'crypto';
+import { IPersonaRepository } from '../IPersonaRepository';
+import AppError from '../../middlewares/AppError';
 
-export class StaticPersonaRepository implements IRepository<Persona> {
+export class StaticPersonaRepository implements IPersonaRepository {
     async findAll(): Promise<Persona[]> {
         return await listaPersonas;
     }
 
-    async findById(id: string): Promise<Persona | undefined> {
-        return listaPersonas.find((p) => p._id === id);
-    }
-    async save(persona: Persona): Promise<Persona | null> {
-        const { nombre, apellido, dni, fechaDeNacimiento, genero, donanteOrganos, autos } = persona;
-        const generosDisponibles = ['masculino', 'femenino', 'no-binario'];
-
-        if (
-            typeof nombre !== 'string' ||
-            typeof apellido !== 'string' ||
-            typeof dni !== 'string' ||
-            !generosDisponibles.includes(genero) ||
-            !Array.isArray(autos)
-        ) {
-            return null;
-        }
-        const fechaNacimientoPersona = new Date(fechaDeNacimiento);
-        if (isNaN(fechaNacimientoPersona.getTime())) {
-            return null;
-        }
-
-        const personaCrear: Persona = {
-            _id: randomUUID(),
-            nombre,
-            apellido,
-            dni,
-            fechaDeNacimiento: fechaNacimientoPersona,
-            genero: genero as Genero,
-            donanteOrganos,
-            autos
-        };
-
-        listaPersonas.push(personaCrear);
-        return personaCrear;
-    }
-
-    async update(id: string, cambios: Partial<Persona>): Promise<Persona | null> {
+    async findById(id: string): Promise<Persona> {
         const persona = listaPersonas.find((p) => p._id === id);
-        if (!persona) return null;
+        if (!persona) {
+            throw new AppError('persona no encontrada', 404);
+        }
+        return persona;
+    }
+    async save(persona: Persona): Promise<Persona> {
+        listaPersonas.push(persona);
+        return persona;
+    }
 
-        if (
-            (cambios.nombre && typeof cambios.nombre !== 'string') ||
-            (cambios.apellido && typeof cambios.apellido !== 'string') ||
-            (cambios.dni && typeof cambios.dni !== 'string') ||
-            (cambios.genero && typeof cambios.genero !== 'string') ||
-            (cambios.fechaDeNacimiento && typeof cambios.fechaDeNacimiento !== 'string') ||
-            (cambios.donanteOrganos !== undefined && typeof cambios.donanteOrganos !== 'boolean') ||
-            (cambios.autos && !Array.isArray(cambios.autos))
-        ) {
-            return null;
+    async update(id: string, cambios: Partial<Persona>): Promise<Persona> {
+        const persona = listaPersonas.find((p) => p._id === id);
+        if (!persona) {
+            throw new AppError('La persona no existe', 404);
         }
 
         persona.nombre = cambios.nombre ?? persona.nombre;

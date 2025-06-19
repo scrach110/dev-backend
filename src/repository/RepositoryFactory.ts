@@ -1,6 +1,4 @@
 import process from 'process';
-import Persona from '../interfaces/Persona';
-import { IRepository } from './IRepository';
 import { StaticPersonaRepository } from './Static/StaticPersonaRepository';
 import { IAutoRepository } from './IAutoRepository';
 import { StaticAutoRepository } from './Static/StaticAutoRepository';
@@ -8,12 +6,13 @@ import { MongoPersonaRepository } from './Mongo/MongoPersonaRepository';
 import { MongoAutoRepository } from './Mongo/MongoAutoRepository';
 import { FireBasePersonaRepository } from './FireBase/FireBasePersonaRepository';
 import { FireBaseAutoRepository } from './FireBase/FireBaseAutoRepository';
+import { IPersonaRepository } from './IPersonaRepository';
 
 export abstract class RepositoryFactory {
-    private static personaRepositorySingleton: IRepository<Persona> | undefined;
+    private static personaRepositorySingleton: IPersonaRepository | undefined;
     private static autoRepositorySingleton: IAutoRepository | undefined;
 
-    public static personaRepository(): IRepository<Persona> {
+    public static personaRepository(): IPersonaRepository {
         if (RepositoryFactory.personaRepositorySingleton === undefined) {
             RepositoryFactory.personaRepositorySingleton = RepositoryFactory.getPersonaRepository();
         }
@@ -27,7 +26,7 @@ export abstract class RepositoryFactory {
         return RepositoryFactory.autoRepositorySingleton;
     }
 
-    private static getPersonaRepository(): IRepository<Persona> {
+    private static getPersonaRepository(): IPersonaRepository {
         if (process.env.REPOSITORY === 'static') {
             return new StaticPersonaRepository();
         } else if (process.env.REPOSITORY === 'mongodb') {
